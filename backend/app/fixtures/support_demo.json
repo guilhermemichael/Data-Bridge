@@ -1,0 +1,47 @@
+[
+  {
+    "opened_at": "2026-04-26",
+    "ticket_id": "SUP-1001",
+    "customer": "Northwind Labs",
+    "priority": "HIGH",
+    "category": "Import failure",
+    "resolution_hours": 6.5,
+    "sla_breached": false
+  },
+  {
+    "opened_at": "2026-04-27",
+    "ticket_id": "SUP-1002",
+    "customer": "Blue Peak Retail",
+    "priority": "MEDIUM",
+    "category": "Dashboard latency",
+    "resolution_hours": 11.0,
+    "sla_breached": false
+  },
+  {
+    "opened_at": "2026-04-28",
+    "ticket_id": "SUP-1003",
+    "customer": "Atlas Foods",
+    "priority": "CRITICAL",
+    "category": "Report download",
+    "resolution_hours": 22.0,
+    "sla_breached": true
+  },
+  {
+    "opened_at": "2026-05-01",
+    "ticket_id": "SUP-1004",
+    "customer": "Vertex Care",
+    "priority": "LOW",
+    "category": "Schema question",
+    "resolution_hours": 3.0,
+    "sla_breached": false
+  },
+  {
+    "opened_at": "2026-05-03",
+    "ticket_id": "SUP-1005",
+    "customer": "Metro Supply",
+    "priority": "HIGH",
+    "category": "Upload validation",
+    "resolution_hours": 14.5,
+    "sla_breached": true
+  }
+]
