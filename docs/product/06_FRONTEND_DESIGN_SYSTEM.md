@@ -44,6 +44,7 @@ Critical red:        #EF4444
 - DatasetTable
 - DatasetForm
 - ImportDropzone
+- ImportJobsTable
 - AlertList
 - ReportList
 - AuditTable

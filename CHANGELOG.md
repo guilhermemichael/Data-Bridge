@@ -21,6 +21,8 @@ All notable changes to Data-Bridge will be documented in this file.
 - Frontend API client, JWT token handling, login, registration and protected dashboard routing.
 - Dashboard cards, chart and recent imports table connected to the analytics overview API.
 - Authenticated dataset management page with API-backed list and create flow.
+- Organization-scoped imports listing and recent imports endpoints.
+- Authenticated upload interface with frontend file validation and import status polling.
 
 ### Changed
 

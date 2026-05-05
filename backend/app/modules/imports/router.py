@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.dependencies import get_current_user, get_db, require_organization_member
-from app.database.models import Dataset, ImportJob, User
+from app.database.models import Dataset, ImportJob, OrganizationMember, User
 from app.integrations.storage.local import LocalStorage
 from app.modules.imports.schemas import ImportJobPublic
 from app.services.audit_service import record_audit
@@ -76,6 +76,54 @@ async def upload_import(
             db.refresh(import_job)
 
     return import_job
+
+
+@router.get("/imports", response_model=list[ImportJobPublic])
+def list_import_jobs(
+    status_filter: str | None = None,
+    dataset_id: str | None = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list[ImportJob]:
+    organization_ids = [
+        membership.organization_id
+        for membership in db.query(OrganizationMember)
+        .filter(OrganizationMember.user_id == current_user.id)
+        .all()
+    ]
+    if not organization_ids:
+        return []
+
+    dataset_query = db.query(Dataset.id).filter(
+        Dataset.organization_id.in_(organization_ids)
+    )
+    if dataset_id is not None:
+        dataset = db.get(Dataset, dataset_id)
+        if dataset is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Dataset not found.",
+            )
+        require_organization_member(db, current_user, dataset.organization_id)
+        dataset_query = dataset_query.filter(Dataset.id == dataset_id)
+
+    dataset_ids = [row.id for row in dataset_query.all()]
+    if not dataset_ids:
+        return []
+
+    query = db.query(ImportJob).filter(ImportJob.dataset_id.in_(dataset_ids))
+    if status_filter is not None:
+        query = query.filter(ImportJob.status == status_filter.upper())
+
+    return query.order_by(ImportJob.created_at.desc()).limit(100).all()
+
+
+@router.get("/imports/recent", response_model=list[ImportJobPublic])
+def list_recent_import_jobs(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list[ImportJob]:
+    return list_import_jobs(db=db, current_user=current_user)[:8]
 
 
 @router.get("/imports/{import_job_id}", response_model=ImportJobPublic)

@@ -35,6 +35,7 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 - Audit log API
 - React login, registration and protected dashboard routes
 - Authenticated dataset list and creation UI connected to the API
+- Authenticated upload and import job monitoring UI
 - Dashboard metrics connected to the live analytics API
 - Docker Compose for PostgreSQL, Redis, API, worker and frontend
 
@@ -169,7 +170,7 @@ alembic upgrade head
 
 ## Roadmap
 
-- Add upload, import monitoring and report workflows to the authenticated frontend.
+- Add report, alert and audit workflows to the authenticated frontend.
 - Add role management screens.
 - Prepare Render, Railway or Fly.io deployment manifests.
 - Add portfolio screenshots and a short demo video.

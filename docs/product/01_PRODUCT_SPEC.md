@@ -35,6 +35,7 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 - Dataset creation and listing.
 - Dataset creation and listing through authenticated frontend screens.
 - CSV, XLSX and JSON import jobs.
+- CSV, XLSX and JSON upload through authenticated frontend screens.
 - Schema detection.
 - Data Health Score.
 - Summary analytics.

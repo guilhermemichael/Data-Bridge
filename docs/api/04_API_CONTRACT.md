@@ -33,6 +33,8 @@ Base path:
 ## Imports
 
 - `POST /datasets/{dataset_id}/imports`
+- `GET /imports`
+- `GET /imports/recent`
 - `GET /imports/{import_id}`
 - `GET /datasets/{dataset_id}/imports`
 
