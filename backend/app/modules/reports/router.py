@@ -92,6 +92,12 @@ def download_report(
             detail="Dataset not found.",
         )
     require_organization_member(db, current_user, dataset.organization_id)
+    if report.file_path is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Report file not found.",
+        )
+
     path = Path(report.file_path)
     if not path.exists():
         raise HTTPException(
