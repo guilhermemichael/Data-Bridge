@@ -1,0 +1,9 @@
+date,sku,product,warehouse,stock_on_hand,reorder_point,unit_cost,status
+2026-05-01,INV-100,Sensor Gateway,Sao Paulo,38,20,210.50,healthy
+2026-05-01,INV-120,Edge Router,Rio de Janeiro,12,18,330.00,reorder
+2026-05-01,INV-140,Barcode Scanner,Curitiba,7,10,145.75,critical
+2026-05-02,INV-160,Mobile Terminal,Belo Horizonte,22,12,415.00,healthy
+2026-05-02,INV-180,Label Printer,Recife,4,8,520.00,critical
+2026-05-03,INV-200,IoT Tag,Sao Paulo,120,80,18.90,healthy
+2026-05-03,INV-220,Cold Chain Probe,Rio de Janeiro,9,14,88.40,reorder
+2026-05-04,INV-240,Warehouse Tablet,Curitiba,15,10,650.00,healthy

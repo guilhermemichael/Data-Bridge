@@ -25,6 +25,7 @@ All notable changes to Data-Bridge will be documented in this file.
 - Authenticated upload interface with frontend file validation and import status polling.
 - Frontend APIs and authenticated pages for alerts, reports and audit logs.
 - Authenticated PDF report download flow through the shared API client.
+- Demo workspace seed script with sales, inventory and support fixtures.
 
 ### Changed
 

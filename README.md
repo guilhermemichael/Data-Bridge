@@ -40,6 +40,7 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 - Authenticated alert management UI with resolve action
 - Authenticated reports UI with PDF generation and token-backed download
 - Authenticated audit log UI for governance events
+- Demo seed command with sales, inventory and support datasets
 - Docker Compose for PostgreSQL, Redis, API, worker and frontend
 
 ## Current Status
@@ -101,6 +102,20 @@ cd backend
 alembic upgrade head
 ```
 
+Load the demo workspace:
+
+```bash
+cd backend
+python -m app.scripts.seed_demo
+```
+
+Demo credentials:
+
+```text
+Email: demo@databridge.dev
+Password: Demo@123456
+```
+
 ## Backend Development
 
 ```bash
@@ -135,6 +150,7 @@ The Vite client reads `VITE_API_BASE_URL`, which should point to the FastAPI `/a
 ```bash
 cd backend
 python -m alembic upgrade head
+python -m app.scripts.seed_demo
 python -m pytest
 python -m ruff check .
 
@@ -173,8 +189,8 @@ alembic upgrade head
 
 ## Roadmap
 
-- Add demo workspace seed data and sample datasets.
 - Add role management screens.
+- Expand backend and frontend test coverage.
 - Prepare Render, Railway or Fly.io deployment manifests.
 - Add portfolio screenshots and a short demo video.
 

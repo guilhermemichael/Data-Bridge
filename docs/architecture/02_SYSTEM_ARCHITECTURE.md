@@ -93,3 +93,20 @@ npm run build
 ## Frontend Integration
 
 The frontend uses a central API client with JWT bearer token injection. Protected routes redirect unauthenticated users to `/login`, while authenticated users enter `/app` and load workspace metrics from `GET /api/v1/analytics/overview`.
+
+## Demo Workspace
+
+The demo seed script creates a reviewer-ready workspace without bypassing the product flow:
+
+```text
+fixtures -> storage copy -> import job -> processing pipeline -> snapshots -> reports -> audit logs
+```
+
+Command:
+
+```bash
+cd backend
+python -m app.scripts.seed_demo
+```
+
+The seed is idempotent for the demo user, organization, completed imports and generated reports. It is blocked when `APP_ENV=production`.

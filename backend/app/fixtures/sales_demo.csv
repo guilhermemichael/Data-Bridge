@@ -1,0 +1,11 @@
+date,product,category,quantity,unit_price,customer,city
+2026-01-05,Data Hub Subscription,SaaS,4,129.90,Northwind Labs,Sao Paulo
+2026-01-12,Analytics Onboarding,Services,1,950.00,Northwind Labs,Sao Paulo
+2026-02-03,Data Hub Subscription,SaaS,7,129.90,Blue Peak Retail,Rio de Janeiro
+2026-02-18,Operational Audit,Services,2,450.00,Blue Peak Retail,Rio de Janeiro
+2026-03-02,Data Quality Review,Services,3,390.00,Atlas Foods,Curitiba
+2026-03-20,Data Hub Subscription,SaaS,8,129.90,Atlas Foods,Curitiba
+2026-04-08,Analytics Onboarding,Services,1,950.00,Vertex Care,Belo Horizonte
+2026-04-21,Data Hub Subscription,SaaS,6,129.90,Vertex Care,Belo Horizonte
+2026-05-02,Operational Audit,Services,,450.00,Metro Supply,Recife
+2026-05-04,Data Hub Subscription,SaaS,,,Metro Supply,Recife
