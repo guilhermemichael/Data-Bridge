@@ -11,10 +11,13 @@ import {
 import { AppShell } from "../components/layout/AppShell";
 import { AuthProvider, useAuth } from "../features/auth/AuthContext";
 import { useAnalyticsOverview } from "../features/analytics/useAnalyticsOverview";
+import { AlertsPage } from "../pages/AlertsPage";
+import { AuditLogsPage } from "../pages/AuditLogsPage";
 import { DashboardPage } from "../pages/DashboardPage";
 import { DatasetsPage } from "../pages/DatasetsPage";
 import { ImportsPage } from "../pages/ImportsPage";
 import { LoginPage } from "../pages/LoginPage";
+import { ReportsPage } from "../pages/ReportsPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { fetchHealth } from "../services/api";
 
@@ -31,6 +34,9 @@ export function App() {
               <Route index element={<DashboardRoute />} />
               <Route path="datasets" element={<DatasetsPage />} />
               <Route path="imports" element={<ImportsPage />} />
+              <Route path="alerts" element={<AlertsPage />} />
+              <Route path="reports" element={<ReportsPage />} />
+              <Route path="audit" element={<AuditLogsPage />} />
               <Route path="*" element={<PlaceholderRoute />} />
             </Route>
           </Route>
