@@ -1,0 +1,115 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: databridge-backend
+    environment:
+      APP_NAME: ${APP_NAME:-Data-Bridge}
+      APP_ENV: ${APP_ENV:-development}
+      APP_DEBUG: ${APP_DEBUG:-true}
+      AUTO_CREATE_TABLES: ${AUTO_CREATE_TABLES:-true}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://databridge:databridge@db:5432/databridge}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-this-in-production}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      UPLOAD_DIR: ${UPLOAD_DIR:-/app/storage/uploads}
+      REPORT_DIR: ${REPORT_DIR:-/app/storage/reports}
+      MAX_UPLOAD_SIZE_MB: ${MAX_UPLOAD_SIZE_MB:-25}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app
+      - databridge_storage:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - databridge-network
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: databridge-worker
+    command: celery -A app.workers.celery_app.celery_app worker --loglevel=INFO
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      AUTO_CREATE_TABLES: ${AUTO_CREATE_TABLES:-true}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://databridge:databridge@db:5432/databridge}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-this-in-production}
+      UPLOAD_DIR: ${UPLOAD_DIR:-/app/storage/uploads}
+      REPORT_DIR: ${REPORT_DIR:-/app/storage/reports}
+      MAX_UPLOAD_SIZE_MB: ${MAX_UPLOAD_SIZE_MB:-25}
+    volumes:
+      - ./backend:/app
+      - databridge_storage:/app/storage
+    depends_on:
+      backend:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    networks:
+      - databridge-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: databridge-frontend
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000/api/v1}
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - databridge-network
+
+  db:
+    image: postgres:16-alpine
+    container_name: databridge-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-databridge}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-databridge}
+      POSTGRES_DB: ${POSTGRES_DB:-databridge}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - databridge_postgres_data:/var/lib/postgresql/data
+    networks:
+      - databridge-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U databridge -d databridge"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: databridge-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - databridge-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  databridge-network:
+    driver: bridge
+
+volumes:
+  databridge_postgres_data:
+  databridge_storage:
