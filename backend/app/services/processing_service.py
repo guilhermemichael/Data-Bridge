@@ -18,7 +18,7 @@ from app.database.models import (
     ProcessedRecord,
     RawRecord,
 )
-from app.integrations.storage.local import LocalStorage
+from app.integrations.storage.factory import get_upload_storage
 from app.services.audit_service import record_audit
 
 
@@ -40,7 +40,7 @@ def process_import_job(import_job_id: str, db: Session) -> ImportJob:
         import_job.started_at = utcnow()
         db.commit()
 
-        storage = LocalStorage()
+        storage = get_upload_storage()
         dataframe = read_dataframe(storage.resolve(import_job.stored_filename))
         if dataframe.empty:
             raise ValueError("Imported file does not contain rows.")

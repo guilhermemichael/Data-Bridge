@@ -179,6 +179,7 @@ Deployment planning is documented in:
 
 - `docs/deployment/DEPLOYMENT.md`
 - `docs/deployment/POSTGRESQL_CLOUD.md`
+- `docs/deployment/STORAGE.md`
 
 Recommended portfolio topology:
 
