@@ -60,6 +60,8 @@ Docker Compose wires health checks for PostgreSQL, Redis and the FastAPI health 
 
 For portfolio usability, the backend can auto-create tables in development through `AUTO_CREATE_TABLES=true`. Production deployment should use Alembic migrations as the authoritative schema evolution mechanism.
 
+Production environments should set `AUTO_CREATE_TABLES=false`, `APP_DEBUG=false`, a managed PostgreSQL `DATABASE_URL`, a managed Redis `REDIS_URL` and a restricted `CORS_ORIGINS` value.
+
 ## Persistence Lifecycle
 
 Schema changes now flow through Alembic:

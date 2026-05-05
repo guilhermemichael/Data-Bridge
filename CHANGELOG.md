@@ -30,6 +30,7 @@ All notable changes to Data-Bridge will be documented in this file.
 - Unified CI workflow for backend linting, migrations, tests and frontend build.
 - Frontend smoke tests for login, metric cards and status badges.
 - Docker runtime health checks, deterministic frontend installs and Docker ignore files.
+- Production deployment documentation and cloud PostgreSQL guide.
 
 ### Changed
 
