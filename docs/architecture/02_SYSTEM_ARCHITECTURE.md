@@ -56,6 +56,17 @@ Upload request
 
 For portfolio usability, the backend can auto-create tables in development through `AUTO_CREATE_TABLES=true`. Production deployment should use Alembic migrations as the authoritative schema evolution mechanism.
 
+## Verification Commands
+
+```bash
+cd backend
+python -m pytest
+python -m ruff check .
+
+cd ../frontend
+npm run build
+```
+
 ## Module Boundaries
 
 - Auth owns identity, password hashing and JWT creation.

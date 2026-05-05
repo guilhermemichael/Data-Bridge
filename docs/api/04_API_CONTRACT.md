@@ -50,6 +50,7 @@ Base path:
 
 - `POST /datasets/{dataset_id}/reports`
 - `GET /reports`
+- `GET /reports/{report_id}/download`
 
 ## Audit
 

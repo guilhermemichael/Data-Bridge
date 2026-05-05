@@ -35,6 +35,10 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 - React dashboard shell with product-grade internal UI
 - Docker Compose for PostgreSQL, Redis, API, worker and frontend
 
+## Current Status
+
+The repository now contains a functional MVP foundation: backend, worker, database models, frontend dashboard, documentation and CI workflows are in place. The backend test suite covers health checks and the main import flow from registration to CSV processing, analytics and PDF report generation.
+
 ## Architecture
 
 ```text
@@ -103,6 +107,17 @@ npm run dev
 npm run build
 ```
 
+## Verification
+
+```bash
+cd backend
+python -m pytest
+python -m ruff check .
+
+cd ../frontend
+npm run build
+```
+
 ## Product Modules
 
 - Authentication
@@ -114,6 +129,15 @@ npm run build
 - Alerts
 - Reports
 - Audit logs
+
+## Roadmap
+
+- Add Alembic migrations as the production schema path.
+- Add real authenticated frontend flows.
+- Connect dashboard widgets to live API data.
+- Add role management screens.
+- Prepare Render, Railway or Fly.io deployment manifests.
+- Add portfolio screenshots and a short demo video.
 
 ## License
 
