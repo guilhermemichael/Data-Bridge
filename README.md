@@ -170,6 +170,31 @@ npm run test -- --run
 npm run build
 ```
 
+## Deployment
+
+Deployment planning is documented in:
+
+- `docs/deployment/DEPLOYMENT.md`
+- `docs/deployment/POSTGRESQL_CLOUD.md`
+
+Recommended portfolio topology:
+
+```text
+Frontend: Vercel
+Backend: Render, Railway or Fly.io
+Database: Neon, Supabase, Railway PostgreSQL or Render PostgreSQL
+Redis: Upstash, Redis Cloud or Railway Redis
+```
+
+Production rules:
+
+- `APP_ENV=production`
+- `APP_DEBUG=false`
+- `AUTO_CREATE_TABLES=false`
+- Run `alembic upgrade head`
+- Restrict `CORS_ORIGINS` to the frontend domain
+- Keep secrets out of Git
+
 ## Product Modules
 
 - Authentication
