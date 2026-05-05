@@ -30,8 +30,10 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 ## MVP Scope
 
 - User registration and login.
+- Protected frontend routes for authenticated users.
 - Organization creation.
 - Dataset creation and listing.
+- Dataset creation and listing through authenticated frontend screens.
 - CSV, XLSX and JSON import jobs.
 - Schema detection.
 - Data Health Score.
@@ -42,6 +44,7 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 - Audit logs.
 - Dockerized local execution.
 - React dashboard shell.
+- Dashboard overview backed by real API metrics.
 
 ## Out of Scope for MVP
 
@@ -59,6 +62,6 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 - A user can upload a supported file to a dataset.
 - The backend records an import job and processes the file.
 - The system calculates quality metrics and analytics snapshots.
-- The frontend displays a realistic dashboard shell.
+- The frontend displays authenticated dashboard data from the backend overview API.
 - The project runs locally with Docker Compose.
 - Documentation explains setup, architecture, security and API shape.

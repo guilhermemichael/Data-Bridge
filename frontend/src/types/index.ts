@@ -9,19 +9,3 @@ export type Metric = {
   tone: StatusTone;
   icon: LucideIcon;
 };
-
-export type ImportJob = {
-  file: string;
-  dataset: string;
-  status: "COMPLETED" | "PROCESSING" | "FAILED" | "VALIDATING";
-  rows: string;
-  health: string;
-  finishedAt: string;
-};
-
-export type AlertItem = {
-  title: string;
-  message: string;
-  severity: "CRITICAL" | "HIGH" | "MEDIUM";
-  dataset: string;
-};

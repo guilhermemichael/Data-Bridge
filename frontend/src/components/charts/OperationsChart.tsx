@@ -8,16 +8,48 @@ import {
   YAxis,
 } from "recharts";
 
-const data = [
-  { month: "Jan", imports: 18, health: 82 },
-  { month: "Feb", imports: 24, health: 85 },
-  { month: "Mar", imports: 31, health: 78 },
-  { month: "Apr", imports: 38, health: 88 },
-  { month: "May", imports: 45, health: 91 },
-  { month: "Jun", imports: 52, health: 89 },
-];
+import type { OverviewTimePoint } from "../../features/analytics/api";
 
-export function OperationsChart() {
+type OperationsChartProps = {
+  importsTimeseries?: OverviewTimePoint[];
+  healthScoreTrend?: OverviewTimePoint[];
+};
+
+function buildChartData({
+  importsTimeseries = [],
+  healthScoreTrend = [],
+}: OperationsChartProps) {
+  if (!importsTimeseries.length && !healthScoreTrend.length) {
+    return [];
+  }
+
+  const periods = Array.from(
+    new Set([
+      ...importsTimeseries.map((point) => point.period),
+      ...healthScoreTrend.map((point) => point.period),
+    ]),
+  ).sort();
+
+  return periods.map((period) => ({
+    month: period,
+    imports:
+      importsTimeseries.find((point) => point.period === period)?.value ?? 0,
+    health:
+      healthScoreTrend.find((point) => point.period === period)?.value ?? 0,
+  }));
+}
+
+export function OperationsChart(props: OperationsChartProps) {
+  const data = buildChartData(props);
+
+  if (!data.length) {
+    return (
+      <div className="flex h-[280px] items-center justify-center rounded-lg border border-dashed border-slate-800 text-sm text-slate-500">
+        No analytics trend yet. Upload a dataset to generate chart data.
+      </div>
+    );
+  }
+
   return (
     <ResponsiveContainer width="100%" height={280}>
       <AreaChart data={data} margin={{ left: -20, right: 8, top: 10 }}>

@@ -6,30 +6,39 @@ import {
   Gauge,
   History,
   Layers3,
+  LogOut,
   Search,
   Settings,
   UploadCloud,
 } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 import { StatusBadge } from "../ui/StatusBadge";
 
 const navigation = [
-  { label: "Dashboard", icon: Gauge, active: true },
-  { label: "Datasets", icon: Database },
-  { label: "Imports", icon: UploadCloud },
-  { label: "Analytics", icon: Activity },
-  { label: "Alerts", icon: Bell },
-  { label: "Reports", icon: FileBarChart },
-  { label: "Audit Logs", icon: History },
-  { label: "Settings", icon: Settings },
+  { label: "Dashboard", icon: Gauge, href: "/app" },
+  { label: "Datasets", icon: Database, href: "/app/datasets" },
+  { label: "Imports", icon: UploadCloud, href: "/app/imports" },
+  { label: "Analytics", icon: Activity, href: "/app/analytics" },
+  { label: "Alerts", icon: Bell, href: "/app/alerts" },
+  { label: "Reports", icon: FileBarChart, href: "/app/reports" },
+  { label: "Audit Logs", icon: History, href: "/app/audit" },
+  { label: "Settings", icon: Settings, href: "/app/settings" },
 ];
 
 type AppShellProps = {
   apiStatus: "online" | "offline";
+  userName?: string;
+  onLogout: () => void;
   children: React.ReactNode;
 };
 
-export function AppShell({ apiStatus, children }: AppShellProps) {
+export function AppShell({
+  apiStatus,
+  userName = "User",
+  onLogout,
+  children,
+}: AppShellProps) {
   return (
     <div className="min-h-screen bg-bridge-bg text-slate-100">
       <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-slate-800 bg-slate-950/95 px-4 py-5 lg:block">
@@ -49,17 +58,20 @@ export function AppShell({ apiStatus, children }: AppShellProps) {
           {navigation.map((item) => {
             const Icon = item.icon;
             return (
-              <button
+              <NavLink
                 key={item.label}
-                className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm transition ${
-                  item.active
-                    ? "bg-blue-500/15 text-blue-100"
-                    : "text-slate-400 hover:bg-slate-900 hover:text-slate-100"
-                }`}
+                className={({ isActive }) =>
+                  `flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm transition ${
+                    isActive
+                      ? "bg-blue-500/15 text-blue-100"
+                      : "text-slate-400 hover:bg-slate-900 hover:text-slate-100"
+                  }`
+                }
+                to={item.href}
               >
                 <Icon size={17} />
                 {item.label}
-              </button>
+              </NavLink>
             );
           })}
         </nav>
@@ -86,8 +98,21 @@ export function AppShell({ apiStatus, children }: AppShellProps) {
                 tone={apiStatus === "online" ? "success" : "danger"}
               />
               <div className="flex h-9 w-9 items-center justify-center rounded-md bg-slate-800 text-sm font-semibold text-slate-200">
-                GM
+                {userName
+                  .split(" ")
+                  .slice(0, 2)
+                  .map((part) => part[0])
+                  .join("")
+                  .toUpperCase()}
               </div>
+              <button
+                className="rounded-md border border-slate-800 bg-slate-950 p-2 text-slate-400 transition hover:text-slate-100"
+                title="Logout"
+                type="button"
+                onClick={onLogout}
+              >
+                <LogOut size={16} />
+              </button>
             </div>
           </div>
         </header>

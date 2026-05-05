@@ -73,3 +73,12 @@ def test_user_can_import_csv_and_read_analytics() -> None:
             json={"title": "Sales Report"},
         )
         assert reports_response.status_code == 201
+
+        overview_response = client.get("/api/v1/analytics/overview", headers=headers)
+        assert overview_response.status_code == 200
+        overview = overview_response.json()
+        assert overview["active_datasets"] == 1
+        assert overview["processed_imports"] == 1
+        assert overview["generated_reports"] == 1
+        assert overview["average_data_health_score"] > 0
+        assert len(overview["recent_imports"]) == 1

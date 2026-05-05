@@ -36,16 +36,20 @@ Critical red:        #EF4444
 - AppShell
 - Sidebar
 - Topbar
+- LoginForm
+- RegisterForm
 - MetricCard
 - ChartPanel
 - StatusBadge
 - DatasetTable
+- DatasetForm
 - ImportDropzone
 - AlertList
 - ReportList
 - AuditTable
 - EmptyState
 - LoadingState
+- ErrorState
 
 ## Interaction Principles
 
@@ -53,3 +57,7 @@ Critical red:        #EF4444
 - Filters are grouped near the data they affect.
 - Loading, error and empty states are explicit.
 - Text stays compact inside operational panels.
+
+## Auth Experience
+
+Authentication screens use the same dark operational system as the app. Login and registration must show loading, validation and API error states, then redirect into the protected workspace.
