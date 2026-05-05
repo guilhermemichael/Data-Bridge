@@ -82,3 +82,7 @@ def test_user_can_import_csv_and_read_analytics() -> None:
         assert overview["generated_reports"] == 1
         assert overview["average_data_health_score"] > 0
         assert len(overview["recent_imports"]) == 1
+
+        imports_response = client.get("/api/v1/imports/recent", headers=headers)
+        assert imports_response.status_code == 200
+        assert imports_response.json()[0]["status"] == "COMPLETED"
