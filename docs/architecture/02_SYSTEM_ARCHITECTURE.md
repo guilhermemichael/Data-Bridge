@@ -54,6 +54,8 @@ Upload request
 - `redis`: Redis 7 broker.
 - `frontend`: Vite development server for React.
 
+Docker Compose wires health checks for PostgreSQL, Redis and the FastAPI health endpoint so dependent services start against ready infrastructure rather than guessed timing.
+
 ## Development Tradeoff
 
 For portfolio usability, the backend can auto-create tables in development through `AUTO_CREATE_TABLES=true`. Production deployment should use Alembic migrations as the authoritative schema evolution mechanism.

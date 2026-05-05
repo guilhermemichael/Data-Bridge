@@ -99,6 +99,13 @@ Services:
 - PostgreSQL: localhost:5432
 - Redis: localhost:6379
 
+Validate Docker Compose configuration when Docker is available:
+
+```bash
+docker compose config
+docker compose build
+```
+
 Apply database migrations:
 
 ```bash
