@@ -34,6 +34,7 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 - Organization creation.
 - Dataset creation and listing.
 - Dataset creation and listing through authenticated frontend screens.
+- Dataset details with schema explorer, processed preview, lineage, health breakdown, reports, alerts and audit context.
 - CSV, XLSX and JSON import jobs.
 - CSV, XLSX and JSON upload through authenticated frontend screens.
 - Schema detection.
@@ -41,6 +42,7 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 - Summary analytics.
 - Time series analytics.
 - Automatic alerts.
+- Statistical alerts for high null rate, duplicate rows and numeric outliers.
 - Report generation records.
 - Audit logs.
 - Dockerized local execution.
@@ -50,6 +52,7 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 - Reports screen with API-backed report generation and authenticated PDF download.
 - Audit logs screen with API-backed governance event history.
 - Demo workspace seed with a demo user, organization, datasets, imports, reports, alerts and audit logs.
+- Role-aware frontend actions for owner/admin/analyst/viewer workflows.
 
 ## Out of Scope for MVP
 
@@ -72,5 +75,6 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 - The frontend lets an authenticated user generate and download PDF reports.
 - The frontend lets an authenticated user inspect audit log events.
 - A reviewer can load a demo workspace with `python -m app.scripts.seed_demo`.
+- A user can inspect dataset schema, preview rows, lineage and health breakdown.
 - The project runs locally with Docker Compose.
 - Documentation explains setup, architecture, security and API shape.

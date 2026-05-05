@@ -21,6 +21,8 @@ Base path:
 - `POST /organizations`
 - `GET /organizations`
 - `GET /organizations/{organization_id}`
+- `PATCH /organizations/{organization_id}`
+- `GET /organizations/{organization_id}/members`
 
 ## Datasets
 
@@ -29,6 +31,9 @@ Base path:
 - `GET /datasets/{dataset_id}`
 - `PATCH /datasets/{dataset_id}`
 - `DELETE /datasets/{dataset_id}`
+- `GET /datasets/{dataset_id}/columns`
+- `GET /datasets/{dataset_id}/preview`
+- `GET /datasets/{dataset_id}/lineage`
 
 ## Imports
 
@@ -43,6 +48,7 @@ Base path:
 - `GET /analytics/overview`
 - `GET /datasets/{dataset_id}/analytics/summary`
 - `GET /datasets/{dataset_id}/analytics/timeseries`
+- `GET /datasets/{dataset_id}/analytics/health-breakdown`
 
 ## Alerts
 

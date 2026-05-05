@@ -2,8 +2,27 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user, get_db, require_organization_member
-from app.database.models import Dataset, OrganizationMember, User
-from app.modules.datasets.schemas import DatasetCreate, DatasetPublic, DatasetUpdate
+from app.database.models import (
+    AnalyticsSnapshot,
+    Dataset,
+    DatasetColumn,
+    ImportJob,
+    OrganizationMember,
+    ProcessedRecord,
+    RawRecord,
+    Report,
+    User,
+)
+from app.modules.datasets.schemas import (
+    DatasetColumnPublic,
+    DatasetCreate,
+    DatasetLineage,
+    DatasetPreviewRecord,
+    DatasetPublic,
+    DatasetUpdate,
+    LineageEdge,
+    LineageNode,
+)
 from app.services.audit_service import record_audit
 
 router = APIRouter()
@@ -84,6 +103,160 @@ def get_dataset(
     return dataset
 
 
+@router.get("/{dataset_id}/columns", response_model=list[DatasetColumnPublic])
+def list_dataset_columns(
+    dataset_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list[DatasetColumn]:
+    dataset = get_authorized_dataset(db, current_user, dataset_id)
+    return (
+        db.query(DatasetColumn)
+        .filter(DatasetColumn.dataset_id == dataset.id)
+        .order_by(DatasetColumn.created_at.desc(), DatasetColumn.name.asc())
+        .all()
+    )
+
+
+@router.get("/{dataset_id}/preview", response_model=list[DatasetPreviewRecord])
+def preview_dataset_records(
+    dataset_id: str,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> list[DatasetPreviewRecord]:
+    dataset = get_authorized_dataset(db, current_user, dataset_id)
+    safe_limit = max(1, min(limit, 50))
+    records = (
+        db.query(ProcessedRecord)
+        .filter(ProcessedRecord.dataset_id == dataset.id)
+        .order_by(ProcessedRecord.row_number.asc())
+        .limit(safe_limit)
+        .all()
+    )
+    return [
+        DatasetPreviewRecord(
+            row_number=record.row_number,
+            payload=record.payload,
+            quality_score=record.quality_score,
+        )
+        for record in records
+    ]
+
+
+@router.get("/{dataset_id}/lineage", response_model=DatasetLineage)
+def dataset_lineage(
+    dataset_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> DatasetLineage:
+    dataset = get_authorized_dataset(db, current_user, dataset_id)
+    latest_import = (
+        db.query(ImportJob)
+        .filter(ImportJob.dataset_id == dataset.id)
+        .order_by(ImportJob.created_at.desc())
+        .first()
+    )
+    raw_count = 0
+    processed_count = 0
+    snapshot_count = (
+        db.query(AnalyticsSnapshot)
+        .filter(AnalyticsSnapshot.dataset_id == dataset.id)
+        .count()
+    )
+    report_count = db.query(Report).filter(Report.dataset_id == dataset.id).count()
+
+    nodes = [
+        LineageNode(
+            id="dataset",
+            label=dataset.name,
+            type="dataset",
+            detail=f"{dataset.domain_type} dataset",
+        ),
+    ]
+    edges: list[LineageEdge] = []
+
+    if latest_import is not None:
+        raw_count = (
+            db.query(RawRecord)
+            .filter(RawRecord.import_job_id == latest_import.id)
+            .count()
+        )
+        processed_count = (
+            db.query(ProcessedRecord)
+            .filter(ProcessedRecord.import_job_id == latest_import.id)
+            .count()
+        )
+        nodes.extend(
+            [
+                LineageNode(
+                    id="file",
+                    label=latest_import.original_filename,
+                    type="file",
+                    detail=f"{latest_import.file_size_bytes} bytes",
+                ),
+                LineageNode(
+                    id="import_job",
+                    label="Import Job",
+                    type="job",
+                    detail=latest_import.status,
+                ),
+                LineageNode(
+                    id="raw_records",
+                    label="Raw Records",
+                    type="storage",
+                    detail=f"{raw_count} rows",
+                ),
+                LineageNode(
+                    id="processed_records",
+                    label="Processed Records",
+                    type="storage",
+                    detail=f"{processed_count} rows",
+                ),
+            ]
+        )
+        edges.extend(
+            [
+                LineageEdge(source="file", target="import_job", label="uploaded as"),
+                LineageEdge(source="import_job", target="raw_records", label="stores"),
+                LineageEdge(
+                    source="raw_records",
+                    target="processed_records",
+                    label="normalizes into",
+                ),
+                LineageEdge(
+                    source="processed_records",
+                    target="dataset",
+                    label="updates",
+                ),
+            ]
+        )
+
+    nodes.extend(
+        [
+            LineageNode(
+                id="analytics",
+                label="Analytics Snapshots",
+                type="analytics",
+                detail=f"{snapshot_count} metrics",
+            ),
+            LineageNode(
+                id="reports",
+                label="Reports",
+                type="output",
+                detail=f"{report_count} generated",
+            ),
+        ]
+    )
+    edges.extend(
+        [
+            LineageEdge(source="dataset", target="analytics", label="feeds"),
+            LineageEdge(source="analytics", target="reports", label="summarizes into"),
+        ]
+    )
+    return DatasetLineage(dataset_id=dataset.id, nodes=nodes, edges=edges)
+
+
 @router.patch("/{dataset_id}", response_model=DatasetPublic)
 def update_dataset(
     dataset_id: str,
@@ -147,3 +320,18 @@ def delete_dataset(
         user_id=current_user.id,
     )
     db.commit()
+
+
+def get_authorized_dataset(
+    db: Session,
+    current_user: User,
+    dataset_id: str,
+) -> Dataset:
+    dataset = db.get(Dataset, dataset_id)
+    if dataset is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Dataset not found.",
+        )
+    require_organization_member(db, current_user, dataset.organization_id)
+    return dataset

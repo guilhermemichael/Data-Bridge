@@ -2,6 +2,7 @@ import { AlertTriangle, CheckCircle2, RefreshCw } from "lucide-react";
 
 import { StatusBadge } from "../components/ui/StatusBadge";
 import { useAuth } from "../features/auth/AuthContext";
+import { useWorkspaceRole } from "../features/auth/useWorkspaceRole";
 import { useAlerts } from "../features/alerts/useAlerts";
 import type { Alert } from "../features/alerts/api";
 import type { StatusTone } from "../types";
@@ -25,6 +26,7 @@ export function AlertsPage() {
   const { isAuthenticated } = useAuth();
   const { alerts, isLoading, error, refresh, resolve } =
     useAlerts(isAuthenticated);
+  const permissions = useWorkspaceRole();
 
   const openAlerts = alerts.filter((alert) => alert.status === "OPEN").length;
 
@@ -70,7 +72,12 @@ export function AlertsPage() {
 
       <section className="grid gap-4 xl:grid-cols-2">
         {alerts.map((alert) => (
-          <AlertCard key={alert.id} alert={alert} onResolve={resolve} />
+          <AlertCard
+            key={alert.id}
+            alert={alert}
+            canResolve={permissions.can("alerts:resolve")}
+            onResolve={resolve}
+          />
         ))}
       </section>
 
@@ -85,9 +92,11 @@ export function AlertsPage() {
 
 function AlertCard({
   alert,
+  canResolve,
   onResolve,
 }: {
   alert: Alert;
+  canResolve: boolean;
   onResolve: (alertId: string) => Promise<void>;
 }) {
   return (
@@ -110,7 +119,7 @@ function AlertCard({
             </p>
           </div>
         </div>
-        {alert.status === "OPEN" ? (
+        {alert.status === "OPEN" && canResolve ? (
           <button
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm text-emerald-100 transition hover:border-emerald-300/50"
             type="button"

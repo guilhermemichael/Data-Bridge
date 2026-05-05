@@ -47,6 +47,7 @@ JWT_SECRET_KEY=replace-with-a-long-random-secret
 CORS_ORIGINS=https://your-frontend-domain.vercel.app
 UPLOAD_DIR=/app/storage/uploads
 REPORT_DIR=/app/storage/reports
+STORAGE_BACKEND=local
 CELERY_TASK_ALWAYS_EAGER=false
 ```
 
@@ -57,6 +58,7 @@ Rules:
 - Keep `APP_DEBUG=false`.
 - Keep `AUTO_CREATE_TABLES=false` and run Alembic migrations.
 - Restrict `CORS_ORIGINS` to the deployed frontend URL.
+- Use persistent storage for `UPLOAD_DIR` and `REPORT_DIR`.
 
 ## Database Migrations
 

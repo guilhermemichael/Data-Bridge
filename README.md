@@ -33,23 +33,26 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 - Analytics summary and time series endpoints
 - Organization-scoped analytics overview endpoint
 - Automatic operational alerts
+- Statistical anomaly alerts for null rates, duplicates and numeric outliers
 - Report registry with generated summary files
 - Audit log API
 - React login, registration and protected dashboard routes
 - Authenticated dataset list and creation UI connected to the API
+- Dataset detail cockpit with edit, archive, schema explorer, preview, lineage and health breakdown
 - Authenticated upload and import job monitoring UI
 - Dashboard metrics connected to the live analytics API
 - Authenticated alert management UI with resolve action
 - Authenticated reports UI with PDF generation and token-backed download
 - Authenticated audit log UI for governance events
+- Role-aware frontend actions for datasets, imports, alerts, reports and settings
 - Demo seed command with sales, inventory and support datasets
 - Docker Compose for PostgreSQL, Redis, API, worker and frontend
 - Unified GitHub Actions CI for backend linting, migrations, tests and frontend build
-- Frontend smoke tests with Vitest and Testing Library
+- Frontend tests with Vitest and Testing Library for UI smoke checks and RBAC permissions
 
 ## Current Status
 
-The repository now contains a functional MVP foundation: backend, worker, database models, frontend dashboard, documentation and CI workflows are in place. The backend test suite covers health checks, authentication, upload validation, RBAC, the main import flow, analytics and authenticated PDF report download.
+The repository now contains a functional MVP foundation: backend, worker, database models, frontend dashboard, documentation and CI workflows are in place. The backend test suite covers health checks, authentication, upload validation, RBAC, anomaly alerts, dataset detail endpoints, the main import flow, analytics and authenticated PDF report download.
 
 ## Architecture
 
@@ -176,6 +179,7 @@ Deployment planning is documented in:
 
 - `docs/deployment/DEPLOYMENT.md`
 - `docs/deployment/POSTGRESQL_CLOUD.md`
+- `docs/deployment/STORAGE.md`
 
 Recommended portfolio topology:
 
@@ -226,7 +230,6 @@ alembic upgrade head
 
 ## Roadmap
 
-- Add role management screens.
 - Expand backend and frontend test coverage.
 - Prepare Render, Railway or Fly.io deployment manifests.
 - Add portfolio screenshots and a short demo video.

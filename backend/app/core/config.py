@@ -22,6 +22,7 @@ class Settings(BaseSettings):
 
     cors_origins: list[str] = ["http://localhost:5173"]
 
+    storage_backend: str = "local"
     upload_dir: str = "storage/uploads"
     report_dir: str = "storage/reports"
     max_upload_size_mb: int = 25

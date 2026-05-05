@@ -36,7 +36,42 @@ export type AnalyticsOverview = {
   alerts_by_severity: SeverityCount[];
 };
 
+export type MetricItem = {
+  key: string;
+  value: number;
+  dimensions: Record<string, unknown>;
+};
+
+export type AnalyticsSummary = {
+  dataset_id: string;
+  metrics: MetricItem[];
+};
+
+export type HealthBreakdown = {
+  dataset_id: string;
+  score: number;
+  completeness: number;
+  validity: number;
+  uniqueness: number;
+  consistency: number;
+  freshness: number;
+};
+
 export async function getAnalyticsOverview() {
   const response = await apiClient.get<AnalyticsOverview>("/analytics/overview");
+  return response.data;
+}
+
+export async function getDatasetAnalyticsSummary(datasetId: string) {
+  const response = await apiClient.get<AnalyticsSummary>(
+    `/datasets/${datasetId}/analytics/summary`,
+  );
+  return response.data;
+}
+
+export async function getDatasetHealthBreakdown(datasetId: string) {
+  const response = await apiClient.get<HealthBreakdown>(
+    `/datasets/${datasetId}/analytics/health-breakdown`,
+  );
   return response.data;
 }

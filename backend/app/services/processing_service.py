@@ -18,7 +18,7 @@ from app.database.models import (
     ProcessedRecord,
     RawRecord,
 )
-from app.integrations.storage.local import LocalStorage
+from app.integrations.storage.factory import get_upload_storage
 from app.services.audit_service import record_audit
 
 
@@ -40,7 +40,7 @@ def process_import_job(import_job_id: str, db: Session) -> ImportJob:
         import_job.started_at = utcnow()
         db.commit()
 
-        storage = LocalStorage()
+        storage = get_upload_storage()
         dataframe = read_dataframe(storage.resolve(import_job.stored_filename))
         if dataframe.empty:
             raise ValueError("Imported file does not contain rows.")
@@ -84,6 +84,7 @@ def process_import_job(import_job_id: str, db: Session) -> ImportJob:
             health_score,
             invalid_rows,
             len(dataframe),
+            dataframe,
         )
 
         dataset = db.get(Dataset, import_job.dataset_id)
@@ -339,6 +340,7 @@ def save_alerts(
     health_score: float,
     invalid_rows: int,
     total_rows: int,
+    dataframe: pd.DataFrame,
 ) -> None:
     dataset = db.get(Dataset, dataset_id)
     if dataset is None:
@@ -367,6 +369,52 @@ def save_alerts(
                 message=f"{invalid_rows} of {total_rows} rows have low quality.",
             )
         )
+    null_ratio = float(dataframe.isna().sum().sum()) / max(
+        len(dataframe) * max(len(dataframe.columns), 1),
+        1,
+    )
+    if null_ratio >= 0.20:
+        alerts.append(
+            Alert(
+                organization_id=dataset.organization_id,
+                dataset_id=dataset_id,
+                type="HIGH_NULL_RATE",
+                severity="HIGH",
+                title="High missing value rate",
+                message=f"{null_ratio:.1%} of cells are missing values.",
+                metadata_payload={"null_ratio": round(null_ratio, 4)},
+            )
+        )
+
+    duplicate_ratio = float(dataframe.duplicated().sum()) / max(len(dataframe), 1)
+    if duplicate_ratio >= 0.10:
+        alerts.append(
+            Alert(
+                organization_id=dataset.organization_id,
+                dataset_id=dataset_id,
+                type="HIGH_DUPLICATE_RATE",
+                severity="MEDIUM",
+                title="Duplicate rows detected",
+                message=f"{duplicate_ratio:.1%} of rows appear duplicated.",
+                metadata_payload={"duplicate_ratio": round(duplicate_ratio, 4)},
+            )
+        )
+
+    for anomaly in detect_numeric_anomalies(dataframe):
+        alerts.append(
+            Alert(
+                organization_id=dataset.organization_id,
+                dataset_id=dataset_id,
+                type="ANOMALY_DETECTED",
+                severity="MEDIUM",
+                title=f"Numeric anomaly in {anomaly['column']}",
+                message=(
+                    f"{anomaly['outlier_count']} values in {anomaly['column']} "
+                    "are outside the expected IQR range."
+                ),
+                metadata_payload=anomaly,
+            )
+        )
     if total_rows == 0:
         alerts.append(
             Alert(
@@ -379,3 +427,37 @@ def save_alerts(
             )
         )
     db.add_all(alerts)
+
+
+def detect_numeric_anomalies(dataframe: pd.DataFrame) -> list[dict[str, Any]]:
+    anomalies: list[dict[str, Any]] = []
+    numeric_columns = dataframe.select_dtypes(include="number").columns.tolist()
+    for column in numeric_columns[:6]:
+        series = pd.to_numeric(dataframe[column], errors="coerce").dropna()
+        if len(series) < 4:
+            continue
+
+        q1 = float(series.quantile(0.25))
+        q3 = float(series.quantile(0.75))
+        iqr = q3 - q1
+        if iqr <= 0:
+            continue
+
+        lower_bound = q1 - 1.5 * iqr
+        upper_bound = q3 + 1.5 * iqr
+        outliers = series[(series < lower_bound) | (series > upper_bound)]
+        if outliers.empty:
+            continue
+
+        anomalies.append(
+            {
+                "column": str(column),
+                "outlier_count": int(len(outliers)),
+                "outlier_ratio": round(float(len(outliers)) / float(len(series)), 4),
+                "lower_bound": round(lower_bound, 4),
+                "upper_bound": round(upper_bound, 4),
+                "max_value": round(float(outliers.max()), 4),
+                "min_value": round(float(outliers.min()), 4),
+            }
+        )
+    return anomalies

@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { listOrganizations, type Organization } from "./api";
+import {
+  listOrganizations,
+  updateOrganization,
+  type Organization,
+} from "./api";
 
 type OrganizationState = {
   organizations: Organization[];
@@ -37,5 +41,14 @@ export function useOrganizations(enabled: boolean) {
     void refresh();
   }, [refresh]);
 
-  return { ...state, refresh };
+  const update = useCallback(
+    async (organizationId: string, name: string) => {
+      const organization = await updateOrganization(organizationId, name);
+      await refresh();
+      return organization;
+    },
+    [refresh],
+  );
+
+  return { ...state, refresh, update };
 }

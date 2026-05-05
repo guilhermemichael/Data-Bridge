@@ -1,5 +1,7 @@
+from datetime import UTC, datetime
+
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import func
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user, get_db, require_organization_member
@@ -9,12 +11,14 @@ from app.database.models import (
     Dataset,
     ImportJob,
     OrganizationMember,
+    ProcessedRecord,
     Report,
     User,
 )
 from app.modules.analytics.schemas import (
     AnalyticsOverview,
     AnalyticsSummary,
+    HealthBreakdown,
     MetricItem,
     OverviewTimePoint,
     RecentImportItem,
@@ -234,6 +238,90 @@ def analytics_timeseries(
         key=lambda item: item.period,
     )
     return TimeSeriesResponse(dataset_id=dataset_id, points=points)
+
+
+@router.get(
+    "/datasets/{dataset_id}/analytics/health-breakdown",
+    response_model=HealthBreakdown,
+)
+def analytics_health_breakdown(
+    dataset_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> HealthBreakdown:
+    dataset = db.get(Dataset, dataset_id)
+    if dataset is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Dataset not found.",
+        )
+    require_organization_member(db, current_user, dataset.organization_id)
+
+    latest_import = (
+        db.query(ImportJob)
+        .filter(ImportJob.dataset_id == dataset_id)
+        .order_by(ImportJob.created_at.desc())
+        .first()
+    )
+    import_ids = (
+        select(ImportJob.id)
+        .where(ImportJob.dataset_id == dataset_id)
+    )
+
+    if latest_import is None or latest_import.total_rows == 0:
+        return HealthBreakdown(
+            dataset_id=dataset_id,
+            score=dataset.health_score,
+            completeness=0.0,
+            validity=0.0,
+            uniqueness=0.0,
+            consistency=0.0,
+            freshness=0.0,
+        )
+
+    records = (
+        db.query(ProcessedRecord)
+        .filter(ProcessedRecord.import_job_id.in_(import_ids))
+        .all()
+    )
+    total_records = max(len(records), 1)
+    completeness = round(
+        sum(record.quality_score for record in records) / total_records * 100,
+        2,
+    )
+    validity = round(
+        latest_import.valid_rows / max(latest_import.total_rows, 1) * 100,
+        2,
+    )
+    unique_payloads = {str(record.payload) for record in records}
+    uniqueness = round(len(unique_payloads) / total_records * 100, 2)
+    consistency = round((completeness + validity + uniqueness) / 3, 2)
+
+    freshness = 0.0
+    if dataset.last_imported_at is not None:
+        imported_at = dataset.last_imported_at
+        if imported_at.tzinfo is None:
+            imported_at = imported_at.replace(tzinfo=UTC)
+        age_days = max((datetime.now(UTC) - imported_at).days, 0)
+        freshness = round(max(0.0, 100.0 - age_days * 3), 2)
+
+    score = round(
+        completeness * 0.30
+        + validity * 0.25
+        + uniqueness * 0.20
+        + consistency * 0.15
+        + freshness * 0.10,
+        2,
+    )
+    return HealthBreakdown(
+        dataset_id=dataset_id,
+        score=score,
+        completeness=completeness,
+        validity=validity,
+        uniqueness=uniqueness,
+        consistency=consistency,
+        freshness=freshness,
+    )
 
 
 def build_monthly_count_series(imports: list[ImportJob]) -> list[OverviewTimePoint]:
