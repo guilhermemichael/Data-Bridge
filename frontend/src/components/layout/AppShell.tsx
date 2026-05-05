@@ -11,18 +11,19 @@ import {
   Settings,
   UploadCloud,
 } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 import { StatusBadge } from "../ui/StatusBadge";
 
 const navigation = [
-  { label: "Dashboard", icon: Gauge, active: true },
-  { label: "Datasets", icon: Database },
-  { label: "Imports", icon: UploadCloud },
-  { label: "Analytics", icon: Activity },
-  { label: "Alerts", icon: Bell },
-  { label: "Reports", icon: FileBarChart },
-  { label: "Audit Logs", icon: History },
-  { label: "Settings", icon: Settings },
+  { label: "Dashboard", icon: Gauge, href: "/app" },
+  { label: "Datasets", icon: Database, href: "/app/datasets" },
+  { label: "Imports", icon: UploadCloud, href: "/app/imports" },
+  { label: "Analytics", icon: Activity, href: "/app/analytics" },
+  { label: "Alerts", icon: Bell, href: "/app/alerts" },
+  { label: "Reports", icon: FileBarChart, href: "/app/reports" },
+  { label: "Audit Logs", icon: History, href: "/app/audit" },
+  { label: "Settings", icon: Settings, href: "/app/settings" },
 ];
 
 type AppShellProps = {
@@ -57,17 +58,20 @@ export function AppShell({
           {navigation.map((item) => {
             const Icon = item.icon;
             return (
-              <button
+              <NavLink
                 key={item.label}
-                className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm transition ${
-                  item.active
-                    ? "bg-blue-500/15 text-blue-100"
-                    : "text-slate-400 hover:bg-slate-900 hover:text-slate-100"
-                }`}
+                className={({ isActive }) =>
+                  `flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm transition ${
+                    isActive
+                      ? "bg-blue-500/15 text-blue-100"
+                      : "text-slate-400 hover:bg-slate-900 hover:text-slate-100"
+                  }`
+                }
+                to={item.href}
               >
                 <Icon size={17} />
                 {item.label}
-              </button>
+              </NavLink>
             );
           })}
         </nav>

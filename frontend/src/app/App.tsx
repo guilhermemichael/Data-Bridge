@@ -12,6 +12,7 @@ import { AppShell } from "../components/layout/AppShell";
 import { AuthProvider, useAuth } from "../features/auth/AuthContext";
 import { useAnalyticsOverview } from "../features/analytics/useAnalyticsOverview";
 import { DashboardPage } from "../pages/DashboardPage";
+import { DatasetsPage } from "../pages/DatasetsPage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { fetchHealth } from "../services/api";
@@ -25,7 +26,11 @@ export function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route element={<ProtectedRoute />}>
-            <Route path="/app" element={<DashboardShell />} />
+            <Route path="/app" element={<DashboardShell />}>
+              <Route index element={<DashboardRoute />} />
+              <Route path="datasets" element={<DatasetsPage />} />
+              <Route path="*" element={<PlaceholderRoute />} />
+            </Route>
           </Route>
           <Route path="*" element={<Navigate to="/app" replace />} />
         </Routes>
@@ -56,7 +61,6 @@ function DashboardShell() {
   const [apiStatus, setApiStatus] = useState<"online" | "offline">("offline");
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const overview = useAnalyticsOverview(isAuthenticated);
 
   useEffect(() => {
     void fetchHealth().then(setApiStatus);
@@ -73,11 +77,38 @@ function DashboardShell() {
       userName={user?.full_name}
       onLogout={handleLogout}
     >
-      <DashboardPage
-        overview={overview.data}
-        isLoading={overview.isLoading}
-        error={overview.error}
-      />
+      <Outlet />
     </AppShell>
+  );
+}
+
+function DashboardRoute() {
+  const { isAuthenticated } = useAuth();
+  const overview = useAnalyticsOverview(isAuthenticated);
+
+  return (
+    <DashboardPage
+      overview={overview.data}
+      isLoading={overview.isLoading}
+      error={overview.error}
+    />
+  );
+}
+
+function PlaceholderRoute() {
+  return (
+    <section className="rounded-lg border border-slate-800 bg-slate-950/70 p-8">
+      <p className="text-xs font-medium uppercase tracking-wide text-cyan-300">
+        Next workspace module
+      </p>
+      <h2 className="mt-2 text-xl font-semibold text-white">
+        This page is queued in the Release 1.0 checklist.
+      </h2>
+      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
+        The authenticated routing foundation is ready. The next implementation
+        blocks will replace these placeholders with imports, analytics, alerts,
+        reports and audit log screens backed by the API.
+      </p>
+    </section>
   );
 }
