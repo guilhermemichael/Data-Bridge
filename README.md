@@ -33,6 +33,7 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 - Analytics summary and time series endpoints
 - Organization-scoped analytics overview endpoint
 - Automatic operational alerts
+- Statistical anomaly alerts for null rates, duplicates and numeric outliers
 - Report registry with generated summary files
 - Audit log API
 - React login, registration and protected dashboard routes
@@ -51,7 +52,7 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 
 ## Current Status
 
-The repository now contains a functional MVP foundation: backend, worker, database models, frontend dashboard, documentation and CI workflows are in place. The backend test suite covers health checks, authentication, upload validation, RBAC, dataset detail endpoints, the main import flow, analytics and authenticated PDF report download.
+The repository now contains a functional MVP foundation: backend, worker, database models, frontend dashboard, documentation and CI workflows are in place. The backend test suite covers health checks, authentication, upload validation, RBAC, anomaly alerts, dataset detail endpoints, the main import flow, analytics and authenticated PDF report download.
 
 ## Architecture
 

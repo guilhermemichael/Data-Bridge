@@ -42,6 +42,7 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 - Summary analytics.
 - Time series analytics.
 - Automatic alerts.
+- Statistical alerts for high null rate, duplicate rows and numeric outliers.
 - Report generation records.
 - Audit logs.
 - Dockerized local execution.
