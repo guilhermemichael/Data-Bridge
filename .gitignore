@@ -27,10 +27,10 @@ env/
 logs/
 
 # Uploads and generated files
-storage/
-uploads/
-reports/generated/
-backend/storage/
+/storage/
+/uploads/
+/reports/generated/
+/backend/storage/
 
 # Node
 node_modules/
