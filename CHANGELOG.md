@@ -23,6 +23,8 @@ All notable changes to Data-Bridge will be documented in this file.
 - Authenticated dataset management page with API-backed list and create flow.
 - Organization-scoped imports listing and recent imports endpoints.
 - Authenticated upload interface with frontend file validation and import status polling.
+- Frontend APIs and authenticated pages for alerts, reports and audit logs.
+- Authenticated PDF report download flow through the shared API client.
 
 ### Changed
 
