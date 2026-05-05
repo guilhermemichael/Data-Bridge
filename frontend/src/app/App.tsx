@@ -13,6 +13,7 @@ import { AuthProvider, useAuth } from "../features/auth/AuthContext";
 import { useAnalyticsOverview } from "../features/analytics/useAnalyticsOverview";
 import { DashboardPage } from "../pages/DashboardPage";
 import { DatasetsPage } from "../pages/DatasetsPage";
+import { ImportsPage } from "../pages/ImportsPage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { fetchHealth } from "../services/api";
@@ -29,6 +30,7 @@ export function App() {
             <Route path="/app" element={<DashboardShell />}>
               <Route index element={<DashboardRoute />} />
               <Route path="datasets" element={<DatasetsPage />} />
+              <Route path="imports" element={<ImportsPage />} />
               <Route path="*" element={<PlaceholderRoute />} />
             </Route>
           </Route>
