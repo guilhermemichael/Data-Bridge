@@ -43,6 +43,10 @@ Critical red:        #EF4444
 - StatusBadge
 - DatasetTable
 - DatasetForm
+- DatasetDetailsPage
+- SchemaExplorer
+- DataLineagePanel
+- DataHealthBreakdown
 - ImportDropzone
 - ImportJobsTable
 - AlertList
@@ -72,3 +76,4 @@ Authentication screens use the same dark operational system as the app. Login an
 - Alerts use severity and status badges, with destructive colors reserved for open high-risk items.
 - Reports combine a compact generation form with a dense table and authenticated download action.
 - Audit logs prioritize timestamp, action, entity, actor and metadata in a wide scanning table.
+- Dataset details are a cockpit view: edit controls, schema, preview, lineage, analytics, reports, alerts and audit tables live in one page to preserve context.

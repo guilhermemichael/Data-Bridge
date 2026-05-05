@@ -3,6 +3,7 @@ import { Download, FileText, RefreshCw } from "lucide-react";
 
 import { StatusBadge } from "../components/ui/StatusBadge";
 import { useAuth } from "../features/auth/AuthContext";
+import { useWorkspaceRole } from "../features/auth/useWorkspaceRole";
 import { useDatasets } from "../features/datasets/useDatasets";
 import { downloadReportBlob } from "../features/reports/api";
 import type { Report } from "../features/reports/api";
@@ -21,6 +22,7 @@ export function ReportsPage() {
   const { datasets } = useDatasets(isAuthenticated);
   const { reports, isLoading, error, refresh, generate } =
     useReports(isAuthenticated);
+  const permissions = useWorkspaceRole();
   const [datasetId, setDatasetId] = useState("");
   const [title, setTitle] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
@@ -31,6 +33,7 @@ export function ReportsPage() {
     () => datasetId || datasets[0]?.id || "",
     [datasetId, datasets],
   );
+  const canGenerateReport = permissions.can("reports:create");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -143,9 +146,14 @@ export function ReportsPage() {
             </label>
 
             {formError ? <p className="text-sm text-red-200">{formError}</p> : null}
+            {!canGenerateReport ? (
+              <p className="text-sm text-yellow-100">
+                Your current role can view reports but cannot generate new ones.
+              </p>
+            ) : null}
             <button
               className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
-              disabled={isSubmitting || !datasets.length}
+              disabled={isSubmitting || !datasets.length || !canGenerateReport}
               type="submit"
             >
               <FileText size={16} />

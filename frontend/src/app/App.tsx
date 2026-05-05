@@ -14,11 +14,13 @@ import { useAnalyticsOverview } from "../features/analytics/useAnalyticsOverview
 import { AlertsPage } from "../pages/AlertsPage";
 import { AuditLogsPage } from "../pages/AuditLogsPage";
 import { DashboardPage } from "../pages/DashboardPage";
+import { DatasetDetailsPage } from "../pages/DatasetDetailsPage";
 import { DatasetsPage } from "../pages/DatasetsPage";
 import { ImportsPage } from "../pages/ImportsPage";
 import { LoginPage } from "../pages/LoginPage";
 import { ReportsPage } from "../pages/ReportsPage";
 import { RegisterPage } from "../pages/RegisterPage";
+import { SettingsPage } from "../pages/SettingsPage";
 import { fetchHealth } from "../services/api";
 
 export function App() {
@@ -33,10 +35,12 @@ export function App() {
             <Route path="/app" element={<DashboardShell />}>
               <Route index element={<DashboardRoute />} />
               <Route path="datasets" element={<DatasetsPage />} />
+              <Route path="datasets/:datasetId" element={<DatasetDetailsPage />} />
               <Route path="imports" element={<ImportsPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="reports" element={<ReportsPage />} />
               <Route path="audit" element={<AuditLogsPage />} />
+              <Route path="settings" element={<SettingsPage />} />
               <Route path="*" element={<PlaceholderRoute />} />
             </Route>
           </Route>

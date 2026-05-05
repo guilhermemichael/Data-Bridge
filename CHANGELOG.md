@@ -31,6 +31,10 @@ All notable changes to Data-Bridge will be documented in this file.
 - Frontend smoke tests for login, metric cards and status badges.
 - Docker runtime health checks, deterministic frontend installs and Docker ignore files.
 - Production deployment documentation and cloud PostgreSQL guide.
+- Dataset detail APIs for schema, preview, lineage and health breakdown.
+- Organization settings and members APIs.
+- Role-aware frontend permissions and dataset detail cockpit.
+- Backend tests for dataset detail and organization member endpoints.
 
 ### Changed
 

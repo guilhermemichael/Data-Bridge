@@ -3,6 +3,7 @@ import { UploadCloud } from "lucide-react";
 
 import { StatusBadge } from "../components/ui/StatusBadge";
 import { useAuth } from "../features/auth/AuthContext";
+import { useWorkspaceRole } from "../features/auth/useWorkspaceRole";
 import { useDatasets } from "../features/datasets/useDatasets";
 import { useImports } from "../features/imports/useImports";
 import type { ImportJob } from "../features/imports/api";
@@ -22,6 +23,7 @@ export function ImportsPage() {
   const { datasets } = useDatasets(isAuthenticated);
   const { imports, activeImport, isLoading, error, upload } =
     useImports(isAuthenticated);
+  const permissions = useWorkspaceRole();
   const [datasetId, setDatasetId] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -31,6 +33,7 @@ export function ImportsPage() {
     () => datasetId || datasets[0]?.id || "",
     [datasetId, datasets],
   );
+  const canUpload = permissions.can("imports:create");
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     setFormError(null);
@@ -140,9 +143,14 @@ export function ImportsPage() {
             </label>
 
             {formError ? <p className="text-sm text-red-200">{formError}</p> : null}
+            {!canUpload ? (
+              <p className="text-sm text-yellow-100">
+                Your current role can monitor imports but cannot upload files.
+              </p>
+            ) : null}
             <button
               className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
-              disabled={isSubmitting || !datasets.length}
+              disabled={isSubmitting || !datasets.length || !canUpload}
               type="submit"
             >
               <UploadCloud size={16} />

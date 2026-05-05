@@ -56,3 +56,13 @@ class AnalyticsOverview(BaseModel):
     imports_timeseries: list[OverviewTimePoint]
     health_score_trend: list[OverviewTimePoint]
     alerts_by_severity: list[SeverityCount]
+
+
+class HealthBreakdown(BaseModel):
+    dataset_id: str
+    score: float
+    completeness: float
+    validity: float
+    uniqueness: float
+    consistency: float
+    freshness: float

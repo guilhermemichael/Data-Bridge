@@ -1,7 +1,9 @@
 import { FormEvent, useMemo, useState } from "react";
 import { Database, Plus, RefreshCw } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { useAuth } from "../features/auth/AuthContext";
+import { useWorkspaceRole } from "../features/auth/useWorkspaceRole";
 import { useDatasets } from "../features/datasets/useDatasets";
 import { useOrganizations } from "../features/organizations/useOrganizations";
 import { StatusBadge } from "../components/ui/StatusBadge";
@@ -14,6 +16,7 @@ export function DatasetsPage() {
     useOrganizations(isAuthenticated);
   const { datasets, isLoading, error, create, refresh } =
     useDatasets(isAuthenticated);
+  const permissions = useWorkspaceRole();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [domainType, setDomainType] = useState("GENERIC");
@@ -24,6 +27,7 @@ export function DatasetsPage() {
   const selectedOrganizationId = useMemo(() => {
     return organizationId || organizations[0]?.id || "";
   }, [organizationId, organizations]);
+  const canCreateDataset = permissions.can("datasets:create");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -137,9 +141,14 @@ export function DatasetsPage() {
             </label>
 
             {formError ? <p className="text-sm text-red-200">{formError}</p> : null}
+            {!canCreateDataset ? (
+              <p className="text-sm text-yellow-100">
+                Your current role can view datasets but cannot create them.
+              </p>
+            ) : null}
             <button
               className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !canCreateDataset}
               type="submit"
             >
               <Database size={16} />
@@ -170,6 +179,7 @@ export function DatasetsPage() {
                   <th className="px-5 py-3 font-medium">Rows</th>
                   <th className="px-5 py-3 font-medium">Health</th>
                   <th className="px-5 py-3 font-medium">Last import</th>
+                  <th className="px-5 py-3 font-medium">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
@@ -197,6 +207,14 @@ export function DatasetsPage() {
                       {dataset.last_imported_at
                         ? new Date(dataset.last_imported_at).toLocaleString("en-US")
                         : "Never"}
+                    </td>
+                    <td className="px-5 py-4">
+                      <Link
+                        className="rounded-md border border-slate-700 px-3 py-2 text-sm text-slate-200 transition hover:border-cyan-400/60"
+                        to={`/app/datasets/${dataset.id}`}
+                      >
+                        Open
+                      </Link>
                     </td>
                   </tr>
                 ))}
