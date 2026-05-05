@@ -38,6 +38,7 @@ Base path:
 
 ## Analytics
 
+- `GET /analytics/overview`
 - `GET /datasets/{dataset_id}/analytics/summary`
 - `GET /datasets/{dataset_id}/analytics/timeseries`
 
