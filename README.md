@@ -1,5 +1,7 @@
 # Data-Bridge
 
+![CI](https://github.com/guilhermemichael/Data-Bridge/actions/workflows/ci.yml/badge.svg)
+
 **Data-Bridge** is a Python-first web platform for importing, validating, processing, analyzing and visualizing operational datasets through a production-oriented architecture.
 
 ## Vision
@@ -42,6 +44,7 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 - Authenticated audit log UI for governance events
 - Demo seed command with sales, inventory and support datasets
 - Docker Compose for PostgreSQL, Redis, API, worker and frontend
+- Unified GitHub Actions CI for backend linting, migrations, tests and frontend build
 
 ## Current Status
 
