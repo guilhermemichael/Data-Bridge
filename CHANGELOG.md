@@ -26,6 +26,7 @@ All notable changes to Data-Bridge will be documented in this file.
 - Frontend APIs and authenticated pages for alerts, reports and audit logs.
 - Authenticated PDF report download flow through the shared API client.
 - Demo workspace seed script with sales, inventory and support fixtures.
+- Backend tests for authentication, upload validation, RBAC and report download.
 
 ### Changed
 

@@ -45,7 +45,7 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 
 ## Current Status
 
-The repository now contains a functional MVP foundation: backend, worker, database models, frontend dashboard, documentation and CI workflows are in place. The backend test suite covers health checks and the main import flow from registration to CSV processing, analytics and PDF report generation.
+The repository now contains a functional MVP foundation: backend, worker, database models, frontend dashboard, documentation and CI workflows are in place. The backend test suite covers health checks, authentication, upload validation, RBAC, the main import flow, analytics and authenticated PDF report download.
 
 ## Architecture
 
