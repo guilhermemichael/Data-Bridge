@@ -1,5 +1,7 @@
 # Data-Bridge
 
+![CI](https://github.com/guilhermemichael/Data-Bridge/actions/workflows/ci.yml/badge.svg)
+
 **Data-Bridge** is a Python-first web platform for importing, validating, processing, analyzing and visualizing operational datasets through a production-oriented architecture.
 
 ## Vision
@@ -37,11 +39,17 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 - Authenticated dataset list and creation UI connected to the API
 - Authenticated upload and import job monitoring UI
 - Dashboard metrics connected to the live analytics API
+- Authenticated alert management UI with resolve action
+- Authenticated reports UI with PDF generation and token-backed download
+- Authenticated audit log UI for governance events
+- Demo seed command with sales, inventory and support datasets
 - Docker Compose for PostgreSQL, Redis, API, worker and frontend
+- Unified GitHub Actions CI for backend linting, migrations, tests and frontend build
+- Frontend smoke tests with Vitest and Testing Library
 
 ## Current Status
 
-The repository now contains a functional MVP foundation: backend, worker, database models, frontend dashboard, documentation and CI workflows are in place. The backend test suite covers health checks and the main import flow from registration to CSV processing, analytics and PDF report generation.
+The repository now contains a functional MVP foundation: backend, worker, database models, frontend dashboard, documentation and CI workflows are in place. The backend test suite covers health checks, authentication, upload validation, RBAC, the main import flow, analytics and authenticated PDF report download.
 
 ## Architecture
 
@@ -91,11 +99,32 @@ Services:
 - PostgreSQL: localhost:5432
 - Redis: localhost:6379
 
+Validate Docker Compose configuration when Docker is available:
+
+```bash
+docker compose config
+docker compose build
+```
+
 Apply database migrations:
 
 ```bash
 cd backend
 alembic upgrade head
+```
+
+Load the demo workspace:
+
+```bash
+cd backend
+python -m app.scripts.seed_demo
+```
+
+Demo credentials:
+
+```text
+Email: demo@databridge.dev
+Password: Demo@123456
 ```
 
 ## Backend Development
@@ -132,10 +161,12 @@ The Vite client reads `VITE_API_BASE_URL`, which should point to the FastAPI `/a
 ```bash
 cd backend
 python -m alembic upgrade head
+python -m app.scripts.seed_demo
 python -m pytest
 python -m ruff check .
 
 cd ../frontend
+npm run test -- --run
 npm run build
 ```
 
@@ -170,8 +201,8 @@ alembic upgrade head
 
 ## Roadmap
 
-- Add report, alert and audit workflows to the authenticated frontend.
 - Add role management screens.
+- Expand backend and frontend test coverage.
 - Prepare Render, Railway or Fly.io deployment manifests.
 - Add portfolio screenshots and a short demo video.
 

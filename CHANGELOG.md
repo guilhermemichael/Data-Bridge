@@ -23,8 +23,18 @@ All notable changes to Data-Bridge will be documented in this file.
 - Authenticated dataset management page with API-backed list and create flow.
 - Organization-scoped imports listing and recent imports endpoints.
 - Authenticated upload interface with frontend file validation and import status polling.
+- Frontend APIs and authenticated pages for alerts, reports and audit logs.
+- Authenticated PDF report download flow through the shared API client.
+- Demo workspace seed script with sales, inventory and support fixtures.
+- Backend tests for authentication, upload validation, RBAC and report download.
+- Unified CI workflow for backend linting, migrations, tests and frontend build.
+- Frontend smoke tests for login, metric cards and status badges.
+- Docker runtime health checks, deterministic frontend installs and Docker ignore files.
 
 ### Changed
 
 - Frontend build now runs TypeScript in no-emit mode to avoid generated metadata files.
 - Database models now include import `updated_at`, processed record row numbers, organization-scoped reports and organization-scoped alerts.
+- Separate backend and frontend workflows were consolidated into `.github/workflows/ci.yml`.
+- CI now runs frontend smoke tests after the production build.
+- Makefile now exposes frontend and Docker validation commands.

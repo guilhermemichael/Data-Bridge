@@ -48,6 +48,10 @@ Critical red:        #EF4444
 - AlertList
 - ReportList
 - AuditTable
+- AlertCard
+- ReportsTable
+- GenerateReportForm
+- AuditLogsTable
 - EmptyState
 - LoadingState
 - ErrorState
@@ -62,3 +66,9 @@ Critical red:        #EF4444
 ## Auth Experience
 
 Authentication screens use the same dark operational system as the app. Login and registration must show loading, validation and API error states, then redirect into the protected workspace.
+
+## Operational Output Screens
+
+- Alerts use severity and status badges, with destructive colors reserved for open high-risk items.
+- Reports combine a compact generation form with a dense table and authenticated download action.
+- Audit logs prioritize timestamp, action, entity, actor and metadata in a wide scanning table.

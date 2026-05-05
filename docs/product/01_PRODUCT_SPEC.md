@@ -46,6 +46,10 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 - Dockerized local execution.
 - React dashboard shell.
 - Dashboard overview backed by real API metrics.
+- Alert management screen with API-backed listing and resolve action.
+- Reports screen with API-backed report generation and authenticated PDF download.
+- Audit logs screen with API-backed governance event history.
+- Demo workspace seed with a demo user, organization, datasets, imports, reports, alerts and audit logs.
 
 ## Out of Scope for MVP
 
@@ -64,5 +68,9 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 - The backend records an import job and processes the file.
 - The system calculates quality metrics and analytics snapshots.
 - The frontend displays authenticated dashboard data from the backend overview API.
+- The frontend lets an authenticated user review and resolve alerts.
+- The frontend lets an authenticated user generate and download PDF reports.
+- The frontend lets an authenticated user inspect audit log events.
+- A reviewer can load a demo workspace with `python -m app.scripts.seed_demo`.
 - The project runs locally with Docker Compose.
 - Documentation explains setup, architecture, security and API shape.
