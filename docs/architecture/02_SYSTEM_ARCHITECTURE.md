@@ -7,6 +7,8 @@ Data-Bridge uses a modular monorepo architecture:
 ```text
 React Frontend
      |
+     | JWT bearer token
+     |
      v
 FastAPI Backend
      |
@@ -87,3 +89,7 @@ npm run build
 - Alerts own risk and anomaly messages.
 - Reports own generated report metadata.
 - Audit owns traceability of sensitive operations.
+
+## Frontend Integration
+
+The frontend uses a central API client with JWT bearer token injection. Protected routes redirect unauthenticated users to `/login`, while authenticated users enter `/app` and load workspace metrics from `GET /api/v1/analytics/overview`.
