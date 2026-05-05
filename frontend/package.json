@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.1.1",
+    "axios": "^1.16.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.561.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-router-dom": "^7.14.2",
     "recharts": "^3.6.0"
   },
   "devDependencies": {

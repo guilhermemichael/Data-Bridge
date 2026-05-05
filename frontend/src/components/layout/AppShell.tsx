@@ -6,6 +6,7 @@ import {
   Gauge,
   History,
   Layers3,
+  LogOut,
   Search,
   Settings,
   UploadCloud,
@@ -26,10 +27,17 @@ const navigation = [
 
 type AppShellProps = {
   apiStatus: "online" | "offline";
+  userName?: string;
+  onLogout: () => void;
   children: React.ReactNode;
 };
 
-export function AppShell({ apiStatus, children }: AppShellProps) {
+export function AppShell({
+  apiStatus,
+  userName = "User",
+  onLogout,
+  children,
+}: AppShellProps) {
   return (
     <div className="min-h-screen bg-bridge-bg text-slate-100">
       <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-slate-800 bg-slate-950/95 px-4 py-5 lg:block">
@@ -86,8 +94,21 @@ export function AppShell({ apiStatus, children }: AppShellProps) {
                 tone={apiStatus === "online" ? "success" : "danger"}
               />
               <div className="flex h-9 w-9 items-center justify-center rounded-md bg-slate-800 text-sm font-semibold text-slate-200">
-                GM
+                {userName
+                  .split(" ")
+                  .slice(0, 2)
+                  .map((part) => part[0])
+                  .join("")
+                  .toUpperCase()}
               </div>
+              <button
+                className="rounded-md border border-slate-800 bg-slate-950 p-2 text-slate-400 transition hover:text-slate-100"
+                title="Logout"
+                type="button"
+                onClick={onLogout}
+              >
+                <LogOut size={16} />
+              </button>
             </div>
           </div>
         </header>

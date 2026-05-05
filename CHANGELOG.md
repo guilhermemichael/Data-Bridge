@@ -18,6 +18,8 @@ All notable changes to Data-Bridge will be documented in this file.
 - Alert, report and audit log APIs.
 - Organization-scoped analytics overview endpoint for dashboard metrics.
 - Frontend dashboard shell with metrics, charts, imports and alerts.
+- Frontend API client, JWT token handling, login, registration and protected dashboard routing.
+- Dashboard cards, chart and recent imports table connected to the analytics overview API.
 
 ### Changed
 

@@ -29,10 +29,12 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 - File import jobs for CSV, XLSX and JSON
 - Pandas-based schema detection and data quality scoring
 - Analytics summary and time series endpoints
+- Organization-scoped analytics overview endpoint
 - Automatic operational alerts
 - Report registry with generated summary files
 - Audit log API
-- React dashboard shell with product-grade internal UI
+- React login, registration and protected dashboard routes
+- Dashboard metrics connected to the live analytics API
 - Docker Compose for PostgreSQL, Redis, API, worker and frontend
 
 ## Current Status
@@ -115,6 +117,14 @@ npm run dev
 npm run build
 ```
 
+Frontend environment:
+
+```bash
+cp .env.example .env
+```
+
+The Vite client reads `VITE_API_BASE_URL`, which should point to the FastAPI `/api/v1` base URL.
+
 ## Verification
 
 ```bash
@@ -158,9 +168,7 @@ alembic upgrade head
 
 ## Roadmap
 
-- Add Alembic migrations as the production schema path.
-- Add real authenticated frontend flows.
-- Connect dashboard widgets to live API data.
+- Add dataset management, upload and report workflows to the authenticated frontend.
 - Add role management screens.
 - Prepare Render, Railway or Fly.io deployment manifests.
 - Add portfolio screenshots and a short demo video.
