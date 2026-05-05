@@ -33,6 +33,14 @@ jobs:
         working-directory: backend
         run: ruff check .
 
+      - name: Validate migrations
+        working-directory: backend
+        env:
+          DATABASE_URL: sqlite+pysqlite:///./storage/ci-migrations.sqlite
+        run: |
+          mkdir -p storage
+          alembic upgrade head
+
       - name: Test
         working-directory: backend
         env:

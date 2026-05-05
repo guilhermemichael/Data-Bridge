@@ -185,8 +185,7 @@ def build_records(
 
     for row_offset, (_, row) in enumerate(dataframe.iterrows(), start=2):
         payload = {
-            str(key): sanitize_value(value)
-            for key, value in row.to_dict().items()
+            str(key): sanitize_value(value) for key, value in row.to_dict().items()
         }
         missing_values = sum(value is None for value in payload.values())
         quality_score = max(0.0, 1.0 - (missing_values / column_count))
@@ -202,6 +201,7 @@ def build_records(
             ProcessedRecord(
                 dataset_id=import_job.dataset_id,
                 import_job_id=import_job.id,
+                row_number=row_offset,
                 payload=payload,
                 quality_score=quality_score,
             )
@@ -340,10 +340,15 @@ def save_alerts(
     invalid_rows: int,
     total_rows: int,
 ) -> None:
+    dataset = db.get(Dataset, dataset_id)
+    if dataset is None:
+        return
+
     alerts: list[Alert] = []
     if health_score < 70:
         alerts.append(
             Alert(
+                organization_id=dataset.organization_id,
                 dataset_id=dataset_id,
                 type="DATA_QUALITY_ALERT",
                 severity="CRITICAL" if health_score < 50 else "HIGH",
@@ -354,6 +359,7 @@ def save_alerts(
     if invalid_rows > 0:
         alerts.append(
             Alert(
+                organization_id=dataset.organization_id,
                 dataset_id=dataset_id,
                 type="VALIDATION_ALERT",
                 severity="MEDIUM",
@@ -364,6 +370,7 @@ def save_alerts(
     if total_rows == 0:
         alerts.append(
             Alert(
+                organization_id=dataset.organization_id,
                 dataset_id=dataset_id,
                 type="SYSTEM_ALERT",
                 severity="HIGH",

@@ -1,5 +1,22 @@
 # Data-Bridge Database Schema
 
+## Migration Strategy
+
+Alembic is the authoritative migration tool for Data-Bridge. Development may use SQLAlchemy auto-create for quick bootstrapping, but PostgreSQL, CI and production should apply schema changes with:
+
+```bash
+cd backend
+alembic upgrade head
+```
+
+The initial migration creates the core operational schema and can be validated locally with:
+
+```bash
+alembic upgrade head
+alembic downgrade -1
+alembic upgrade head
+```
+
 ## Core Tables
 
 ### users
@@ -75,6 +92,7 @@ Tracks every file import.
 - `started_at`
 - `finished_at`
 - `created_at`
+- `updated_at`
 
 ### dataset_columns
 
@@ -106,6 +124,7 @@ Stores normalized row payloads.
 - `id`
 - `dataset_id`
 - `import_job_id`
+- `row_number`
 - `payload`
 - `quality_score`
 - `created_at`
@@ -126,11 +145,13 @@ Stores calculated metrics.
 Stores generated operational and data quality alerts.
 
 - `id`
+- `organization_id`
 - `dataset_id`
 - `type`
 - `severity`
 - `title`
 - `message`
+- `metadata`
 - `status`
 - `triggered_at`
 - `resolved_at`
@@ -141,12 +162,15 @@ Stores generated operational and data quality alerts.
 Stores generated report metadata.
 
 - `id`
+- `organization_id`
 - `dataset_id`
 - `generated_by`
 - `title`
 - `file_path`
 - `status`
+- `error_message`
 - `created_at`
+- `finished_at`
 
 ### audit_logs
 

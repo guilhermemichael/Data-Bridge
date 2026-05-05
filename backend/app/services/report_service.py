@@ -5,6 +5,7 @@ from reportlab.pdfgen import canvas
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.utils import utcnow
 from app.database.models import Alert, AnalyticsSnapshot, Dataset, ImportJob, Report
 from app.services.audit_service import record_audit
 
@@ -90,11 +91,13 @@ def generate_report(
     pdf.save()
 
     report = Report(
+        organization_id=dataset.organization_id,
         dataset_id=dataset.id,
         generated_by=generated_by,
         title=report_title,
         file_path=str(file_path),
         status="GENERATED",
+        finished_at=utcnow(),
     )
     db.add(report)
     db.flush()
