@@ -1,10 +1,12 @@
-.PHONY: help up down logs backend frontend test lint format
+.PHONY: help up down logs migrate downgrade backend frontend test lint format
 
 help:
 	@echo "Data-Bridge commands:"
 	@echo "  make up        Start local environment"
 	@echo "  make down      Stop local environment"
 	@echo "  make logs      Show container logs"
+	@echo "  make migrate   Run backend database migrations"
+	@echo "  make downgrade Roll back one backend migration"
 	@echo "  make test      Run backend tests"
 	@echo "  make lint      Run backend linter"
 	@echo "  make format    Format backend code"
@@ -17,6 +19,12 @@ down:
 
 logs:
 	docker compose logs -f
+
+migrate:
+	cd backend && alembic upgrade head
+
+downgrade:
+	cd backend && alembic downgrade -1
 
 test:
 	cd backend && pytest

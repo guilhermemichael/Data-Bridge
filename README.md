@@ -87,6 +87,13 @@ Services:
 - PostgreSQL: localhost:5432
 - Redis: localhost:6379
 
+Apply database migrations:
+
+```bash
+cd backend
+alembic upgrade head
+```
+
 ## Backend Development
 
 ```bash
@@ -94,6 +101,7 @@ cd backend
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -e ".[dev]"
+alembic upgrade head
 pytest
 ruff check .
 ```
@@ -111,6 +119,7 @@ npm run build
 
 ```bash
 cd backend
+python -m alembic upgrade head
 python -m pytest
 python -m ruff check .
 
@@ -129,6 +138,23 @@ npm run build
 - Alerts
 - Reports
 - Audit logs
+
+## Database Migrations
+
+Alembic is the authoritative schema path for PostgreSQL. The backend still supports `AUTO_CREATE_TABLES=true` for fast local bootstrapping, but portfolio and production workflows should use:
+
+```bash
+cd backend
+alembic upgrade head
+```
+
+Migration validation used for this baseline:
+
+```bash
+alembic upgrade head
+alembic downgrade -1
+alembic upgrade head
+```
 
 ## Roadmap
 
