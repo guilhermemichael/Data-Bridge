@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.core.dependencies import get_current_user, get_db, require_organization_member
 from app.database.models import Dataset, ImportJob, OrganizationMember, User
-from app.integrations.storage.local import LocalStorage
+from app.integrations.storage.factory import get_upload_storage
 from app.modules.imports.schemas import ImportJobPublic
 from app.services.audit_service import record_audit
 from app.services.processing_service import process_import_job
@@ -37,7 +37,7 @@ async def upload_import(
         roles={"OWNER", "ADMIN", "ANALYST"},
     )
 
-    stored_file = await LocalStorage().save_upload(file)
+    stored_file = await get_upload_storage().save_upload(file)
     import_job = ImportJob(
         dataset_id=dataset.id,
         uploaded_by=current_user.id,
