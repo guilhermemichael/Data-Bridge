@@ -37,6 +37,7 @@ All notable changes to Data-Bridge will be documented in this file.
 - Backend tests for dataset detail and organization member endpoints.
 - Data quality anomaly alerts for high null rate, duplicate rows and numeric outliers.
 - Backend tests for anomaly alert generation.
+- Frontend permission tests for role-aware UI behavior.
 
 ### Changed
 

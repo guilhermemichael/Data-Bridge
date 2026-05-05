@@ -48,7 +48,7 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 - Demo seed command with sales, inventory and support datasets
 - Docker Compose for PostgreSQL, Redis, API, worker and frontend
 - Unified GitHub Actions CI for backend linting, migrations, tests and frontend build
-- Frontend smoke tests with Vitest and Testing Library
+- Frontend tests with Vitest and Testing Library for UI smoke checks and RBAC permissions
 
 ## Current Status
 
