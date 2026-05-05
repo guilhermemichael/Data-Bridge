@@ -42,6 +42,7 @@ Critical red:        #EF4444
 - ChartPanel
 - StatusBadge
 - DatasetTable
+- DatasetForm
 - ImportDropzone
 - AlertList
 - ReportList

@@ -33,6 +33,7 @@ Every dataset is attached to an organization, every import is tracked as a job, 
 - Protected frontend routes for authenticated users.
 - Organization creation.
 - Dataset creation and listing.
+- Dataset creation and listing through authenticated frontend screens.
 - CSV, XLSX and JSON import jobs.
 - Schema detection.
 - Data Health Score.
