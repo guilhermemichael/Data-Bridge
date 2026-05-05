@@ -29,6 +29,7 @@ All notable changes to Data-Bridge will be documented in this file.
 - Backend tests for authentication, upload validation, RBAC and report download.
 - Unified CI workflow for backend linting, migrations, tests and frontend build.
 - Frontend smoke tests for login, metric cards and status badges.
+- Docker runtime health checks, deterministic frontend installs and Docker ignore files.
 
 ### Changed
 
@@ -36,3 +37,4 @@ All notable changes to Data-Bridge will be documented in this file.
 - Database models now include import `updated_at`, processed record row numbers, organization-scoped reports and organization-scoped alerts.
 - Separate backend and frontend workflows were consolidated into `.github/workflows/ci.yml`.
 - CI now runs frontend smoke tests after the production build.
+- Makefile now exposes frontend and Docker validation commands.
