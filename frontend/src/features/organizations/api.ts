@@ -17,6 +17,8 @@ export type OrganizationMember = {
   created_at: string;
 };
 
+export type OrganizationRole = OrganizationMember["role"];
+
 export async function listOrganizations() {
   const response = await apiClient.get<Organization[]>("/organizations");
   return response.data;
@@ -35,4 +37,34 @@ export async function listOrganizationMembers(organizationId: string) {
     `/organizations/${organizationId}/members`,
   );
   return response.data;
+}
+
+export async function addOrganizationMember(
+  organizationId: string,
+  payload: { email: string; role: OrganizationRole },
+) {
+  const response = await apiClient.post<OrganizationMember>(
+    `/organizations/${organizationId}/members`,
+    payload,
+  );
+  return response.data;
+}
+
+export async function updateOrganizationMember(
+  organizationId: string,
+  memberId: string,
+  payload: { role: OrganizationRole },
+) {
+  const response = await apiClient.patch<OrganizationMember>(
+    `/organizations/${organizationId}/members/${memberId}`,
+    payload,
+  );
+  return response.data;
+}
+
+export async function removeOrganizationMember(
+  organizationId: string,
+  memberId: string,
+) {
+  await apiClient.delete(`/organizations/${organizationId}/members/${memberId}`);
 }

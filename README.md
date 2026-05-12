@@ -6,6 +6,40 @@
 
 The project is designed as a professional portfolio system: not a static dashboard, but a production-oriented simulation of a real internal data platform used to import files, validate data quality, process records, expose analytics, generate reports and audit critical actions.
 
+## Portfolio Demo
+
+Data-Bridge is positioned as a portfolio case study for backend Python, full-stack web development, data processing and operational BI.
+
+- Demo credentials: `demo@databridge.dev` / `Demo@123456`
+- Demo video: [docs/assets/demo/data-bridge-demo.webm](docs/assets/demo/data-bridge-demo.webm)
+- Case study: [docs/product/07_PORTFOLIO_CASE_STUDY.md](docs/product/07_PORTFOLIO_CASE_STUDY.md)
+- API docs locally: `http://localhost:8000/docs`
+- Frontend locally: `http://localhost:5173`
+
+Cloud deployment is prepared with `render.yaml` for the backend and `frontend/vercel.json` for the Vite frontend. A public live URL should be added after provider credentials and production environment variables are configured.
+
+## Screenshots
+
+| Login | Dashboard |
+| --- | --- |
+| ![Login](docs/assets/screenshots/01-login.png) | ![Dashboard](docs/assets/screenshots/02-dashboard.png) |
+
+| Datasets | Dataset Cockpit |
+| --- | --- |
+| ![Datasets](docs/assets/screenshots/03-datasets.png) | ![Dataset Cockpit](docs/assets/screenshots/04-dataset-cockpit.png) |
+
+| Imports | Alerts |
+| --- | --- |
+| ![Imports](docs/assets/screenshots/05-imports.png) | ![Alerts](docs/assets/screenshots/06-alerts.png) |
+
+| Reports | Audit Logs |
+| --- | --- |
+| ![Reports](docs/assets/screenshots/07-reports.png) | ![Audit Logs](docs/assets/screenshots/08-audit-logs.png) |
+
+| Settings |
+| --- |
+| ![Settings](docs/assets/screenshots/09-settings.png) |
+
 ---
 
 ## Table of Contents
@@ -13,6 +47,9 @@ The project is designed as a professional portfolio system: not a static dashboa
 - [Overview](#overview)
 - [Problem](#problem)
 - [Solution](#solution)
+- [Portfolio Demo](#portfolio-demo)
+- [Screenshots](#screenshots)
+- [What This Proves](#what-this-proves)
 - [Current Status](#current-status)
 - [Core Features](#core-features)
 - [Architecture](#architecture)
@@ -32,6 +69,16 @@ The project is designed as a professional portfolio system: not a static dashboa
 - [Roadmap](#roadmap)
 - [Portfolio Notes](#portfolio-notes)
 - [License](#license)
+
+---
+
+## What This Proves
+
+- Backend API design with FastAPI, auth, RBAC, uploads and domain modules.
+- Data processing with pandas, schema detection, data quality scoring and anomaly alerts.
+- Operational BI with dashboards, import monitoring, alerting and PDF reports.
+- Governance patterns with organizations, members, audit logs and role-aware UI.
+- Delivery discipline with Docker, Alembic, CI, tests, deployment docs and demo assets.
 
 ---
 
@@ -209,7 +256,6 @@ The API routers are registered for health, auth, organizations, datasets, import
 - Foundation for traceability and compliance-style review
 
 ---
-
 ## Architecture
 
 ```text
@@ -609,6 +655,11 @@ Database: Neon, Supabase, Railway PostgreSQL or Render PostgreSQL
 Redis: Upstash, Redis Cloud or Railway Redis
 ```
 
+Repository deployment helpers:
+
+- Backend Render blueprint: `render.yaml`
+- Frontend Vercel config: `frontend/vercel.json`
+
 Production checklist:
 
 - configure backend environment variables;
@@ -626,15 +677,13 @@ Production checklist:
 
 ## Roadmap
 
-Short-term priorities:
+Remaining Release 1.0 priorities:
 
-- add screenshots to `docs/assets/screenshots/`;
-- record a short portfolio demo video;
-- expand backend and frontend test coverage;
-- harden production deployment configuration;
-- add more dataset examples for sales, inventory and support;
-- improve data lineage visualization;
-- add richer data quality breakdown charts.
+- publish backend and frontend to public cloud URLs;
+- connect a managed PostgreSQL database and run production migrations;
+- configure managed Redis or document eager Celery mode for the public demo;
+- add the final public demo link to this README;
+- continue expanding backend and frontend test coverage.
 
 Release 1.0 target:
 

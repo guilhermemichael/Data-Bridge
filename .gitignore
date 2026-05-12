@@ -42,6 +42,8 @@ pnpm-debug.log*
 # Frontend build
 frontend/dist/
 frontend/.vite/
+frontend/.vercel/
+.vercel/
 *.tsbuildinfo
 frontend/vite.config.js
 frontend/vite.config.d.ts

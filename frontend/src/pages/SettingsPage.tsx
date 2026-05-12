@@ -1,5 +1,5 @@
 import { FormEvent, useMemo, useState } from "react";
-import { RefreshCw, Save, Shield } from "lucide-react";
+import { RefreshCw, Save, Shield, Trash2, UserPlus } from "lucide-react";
 
 import { StatusBadge } from "../components/ui/StatusBadge";
 import { useAuth } from "../features/auth/AuthContext";
@@ -7,25 +7,33 @@ import { useWorkspaceRole } from "../features/auth/useWorkspaceRole";
 import { useOrganizationMembers } from "../features/organizations/useOrganizationMembers";
 import { useOrganizations } from "../features/organizations/useOrganizations";
 
+const roles = ["OWNER", "ADMIN", "ANALYST", "VIEWER"] as const;
+
 export function SettingsPage() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const permissions = useWorkspaceRole();
   const { organizations, isLoading, error, refresh, update } =
     useOrganizations(isAuthenticated);
   const selectedOrganization = organizations[0] ?? null;
-  const { members, refresh: refreshMembers } = useOrganizationMembers(
+  const memberActions = useOrganizationMembers(
     selectedOrganization?.id ?? null,
     isAuthenticated,
   );
+  const { members, refresh: refreshMembers } = memberActions;
   const [name, setName] = useState("");
+  const [memberEmail, setMemberEmail] = useState("");
+  const [memberRole, setMemberRole] = useState<(typeof roles)[number]>("VIEWER");
   const [formError, setFormError] = useState<string | null>(null);
+  const [memberError, setMemberError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [busyMemberId, setBusyMemberId] = useState<string | null>(null);
 
   const organizationName = useMemo(
     () => name || selectedOrganization?.name || "",
     [name, selectedOrganization?.name],
   );
   const canUpdateOrganization = permissions.can("organization:update");
+  const canManageMembers = permissions.can("members:manage");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,6 +53,56 @@ export function SettingsPage() {
       setFormError("Could not update organization settings.");
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  async function handleAddMember(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setMemberError(null);
+
+    if (!memberEmail.trim()) {
+      setMemberError("Provide the email of an existing Data-Bridge user.");
+      return;
+    }
+
+    try {
+      setBusyMemberId("new");
+      await memberActions.add(memberEmail.trim(), memberRole);
+      setMemberEmail("");
+      setMemberRole("VIEWER");
+    } catch {
+      setMemberError(
+        "Could not add this member. Confirm the user exists and is not already in the organization.",
+      );
+    } finally {
+      setBusyMemberId(null);
+    }
+  }
+
+  async function handleRoleChange(memberId: string, role: (typeof roles)[number]) {
+    setMemberError(null);
+    try {
+      setBusyMemberId(memberId);
+      await memberActions.updateRole(memberId, role);
+    } catch {
+      setMemberError("Could not update this member role.");
+    } finally {
+      setBusyMemberId(null);
+    }
+  }
+
+  async function handleRemoveMember(memberId: string, memberName: string) {
+    if (!window.confirm(`Remove ${memberName} from this organization?`)) {
+      return;
+    }
+    setMemberError(null);
+    try {
+      setBusyMemberId(memberId);
+      await memberActions.remove(memberId);
+    } catch {
+      setMemberError("Could not remove this member.");
+    } finally {
+      setBusyMemberId(null);
     }
   }
 
@@ -145,30 +203,110 @@ export function SettingsPage() {
             </p>
           </div>
 
+          <form
+            className="grid gap-3 border-b border-slate-800 p-5 md:grid-cols-[minmax(0,1fr)_160px_auto]"
+            onSubmit={handleAddMember}
+          >
+            <input
+              className="rounded-md border border-slate-800 bg-slate-950 px-3 py-2.5 text-sm text-slate-100 outline-none focus:border-cyan-400/60 disabled:opacity-60"
+              disabled={!canManageMembers || busyMemberId === "new"}
+              placeholder="member@email.com"
+              type="email"
+              value={memberEmail}
+              onChange={(event) => setMemberEmail(event.target.value)}
+            />
+            <select
+              className="rounded-md border border-slate-800 bg-slate-950 px-3 py-2.5 text-sm text-slate-100 outline-none focus:border-cyan-400/60 disabled:opacity-60"
+              disabled={!canManageMembers || busyMemberId === "new"}
+              value={memberRole}
+              onChange={(event) =>
+                setMemberRole(event.target.value as (typeof roles)[number])
+              }
+            >
+              {roles.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
+            <button
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={!canManageMembers || busyMemberId === "new"}
+              type="submit"
+            >
+              <UserPlus size={16} />
+              {busyMemberId === "new" ? "Adding..." : "Add member"}
+            </button>
+          </form>
+
+          {memberError ? (
+            <div className="border-b border-red-400/20 bg-red-400/10 px-5 py-3 text-sm text-red-100">
+              {memberError}
+            </div>
+          ) : null}
+
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px] text-left text-sm">
+            <table className="w-full min-w-[640px] text-left text-sm">
               <thead className="text-xs uppercase text-slate-500">
                 <tr>
-                  <th className="px-5 py-3 font-medium">Name</th>
-                  <th className="px-5 py-3 font-medium">Email</th>
-                  <th className="px-5 py-3 font-medium">Role</th>
-                  <th className="px-5 py-3 font-medium">Joined</th>
+                  <th className="px-4 py-3 font-medium">Name</th>
+                  <th className="px-4 py-3 font-medium">Email</th>
+                  <th className="px-4 py-3 font-medium">Role</th>
+                  <th className="px-4 py-3 font-medium">Joined</th>
+                  <th className="px-4 py-3 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
                 {members.map((member) => (
                   <tr key={member.id} className="hover:bg-slate-900/50">
-                    <td className="px-5 py-4 font-medium text-slate-100">
+                    <td className="px-4 py-4 font-medium text-slate-100">
                       {member.user_full_name}
                     </td>
-                    <td className="px-5 py-4 text-slate-400">
+                    <td className="px-4 py-4 text-slate-400">
                       {member.user_email}
                     </td>
-                    <td className="px-5 py-4">
-                      <StatusBadge label={member.role} tone="info" />
+                    <td className="px-4 py-4">
+                      {canManageMembers ? (
+                        <select
+                          className="rounded-md border border-slate-800 bg-slate-950 px-3 py-2 text-xs text-slate-100 outline-none focus:border-cyan-400/60 disabled:opacity-60"
+                          disabled={busyMemberId === member.id}
+                          value={member.role}
+                          onChange={(event) =>
+                            void handleRoleChange(
+                              member.id,
+                              event.target.value as (typeof roles)[number],
+                            )
+                          }
+                        >
+                          {roles.map((role) => (
+                            <option key={role} value={role}>
+                              {role}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <StatusBadge label={member.role} tone="info" />
+                      )}
                     </td>
-                    <td className="px-5 py-4 text-slate-500">
-                      {new Date(member.created_at).toLocaleString("en-US")}
+                    <td className="px-4 py-4 text-slate-500">
+                      {new Date(member.created_at).toLocaleDateString("en-US")}
+                    </td>
+                    <td className="px-4 py-4">
+                      <button
+                        className="inline-flex items-center justify-center gap-2 rounded-md border border-red-400/30 px-3 py-2 text-xs text-red-100 transition hover:border-red-300/50 disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={
+                          !canManageMembers ||
+                          busyMemberId === member.id ||
+                          member.user_id === user?.id
+                        }
+                        type="button"
+                        onClick={() =>
+                          void handleRemoveMember(member.id, member.user_full_name)
+                        }
+                      >
+                        <Trash2 size={14} />
+                        Remove
+                      </button>
                     </td>
                   </tr>
                 ))}

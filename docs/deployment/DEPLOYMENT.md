@@ -17,6 +17,14 @@ Recommended platform options:
 - Railway Service
 - Fly.io App
 
+The repository includes a Render blueprint at the repository root:
+
+```text
+render.yaml
+```
+
+For a portfolio demo, the blueprint runs Celery in eager mode by default so the web service can process imports without a separate worker. Use a dedicated worker and managed Redis for a stronger production deployment.
+
 Backend build command:
 
 ```bash
@@ -87,6 +95,12 @@ Recommended platform:
 
 - Vercel
 
+The frontend includes a Vercel configuration file:
+
+```text
+frontend/vercel.json
+```
+
 Frontend settings:
 
 ```text
@@ -115,6 +129,21 @@ After deployment:
 5. Create/load a dataset.
 6. Upload a file.
 7. Confirm dashboard, alerts, reports and audit logs update.
+```
+
+## Demo Assets
+
+After running the local demo workspace, screenshots and a short video can be refreshed with:
+
+```bash
+cd frontend
+npm run capture:demo
+```
+
+The command expects the backend and frontend to be running locally and writes:
+
+```text
+docs/assets/demo/data-bridge-demo.webm
 ```
 
 ## Troubleshooting

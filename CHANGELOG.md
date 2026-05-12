@@ -39,6 +39,10 @@ All notable changes to Data-Bridge will be documented in this file.
 - Backend tests for anomaly alert generation.
 - Frontend permission tests for role-aware UI behavior.
 - Storage factory and production storage documentation for uploads and reports.
+- Organization member create, role update and remove workflows.
+- Render backend blueprint and Vercel frontend deployment config.
+- Portfolio case study, real screenshots and automated demo video asset.
+- Playwright-based frontend demo capture script.
 
 ### Changed
 
@@ -47,3 +51,5 @@ All notable changes to Data-Bridge will be documented in this file.
 - Separate backend and frontend workflows were consolidated into `.github/workflows/ci.yml`.
 - CI now runs frontend smoke tests after the production build.
 - Makefile now exposes frontend and Docker validation commands.
+- Backend Dockerfile now uses a production-friendly `$PORT` start command.
+- CORS origin parsing now supports comma-separated environment variables for deploy providers.
