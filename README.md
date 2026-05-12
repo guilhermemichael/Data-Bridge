@@ -4,9 +4,51 @@
 
 **Data-Bridge** is a Python-first web platform for importing, validating, processing, analyzing and visualizing operational datasets through a production-oriented architecture.
 
+## Portfolio Demo
+
+Data-Bridge is positioned as a portfolio case study for backend Python, full-stack web development, data processing and operational BI.
+
+- Demo credentials: `demo@databridge.dev` / `Demo@123456`
+- Demo video: [docs/assets/demo/data-bridge-demo.webm](docs/assets/demo/data-bridge-demo.webm)
+- Case study: [docs/product/07_PORTFOLIO_CASE_STUDY.md](docs/product/07_PORTFOLIO_CASE_STUDY.md)
+- API docs locally: `http://localhost:8000/docs`
+- Frontend locally: `http://localhost:5173`
+
+Cloud deployment is prepared with `render.yaml` for the backend and `frontend/vercel.json` for the Vite frontend. A public live URL should be added after provider credentials and production environment variables are configured.
+
+## Screenshots
+
+| Login | Dashboard |
+| --- | --- |
+| ![Login](docs/assets/screenshots/01-login.png) | ![Dashboard](docs/assets/screenshots/02-dashboard.png) |
+
+| Datasets | Dataset Cockpit |
+| --- | --- |
+| ![Datasets](docs/assets/screenshots/03-datasets.png) | ![Dataset Cockpit](docs/assets/screenshots/04-dataset-cockpit.png) |
+
+| Imports | Alerts |
+| --- | --- |
+| ![Imports](docs/assets/screenshots/05-imports.png) | ![Alerts](docs/assets/screenshots/06-alerts.png) |
+
+| Reports | Audit Logs |
+| --- | --- |
+| ![Reports](docs/assets/screenshots/07-reports.png) | ![Audit Logs](docs/assets/screenshots/08-audit-logs.png) |
+
+| Settings |
+| --- |
+| ![Settings](docs/assets/screenshots/09-settings.png) |
+
 ## Vision
 
 Data-Bridge transforms raw operational files into trusted intelligence. It connects CSV, XLSX and JSON imports, validation pipelines, asynchronous processing, PostgreSQL persistence, analytical dashboards, PDF-style reports, audit logs and alerting workflows into a single cloud-ready platform.
+
+## What This Proves
+
+- Backend API design with FastAPI, auth, RBAC, uploads and domain modules.
+- Data processing with pandas, schema detection, data quality scoring and anomaly alerts.
+- Operational BI with dashboards, import monitoring, alerting and PDF reports.
+- Governance patterns with organizations, members, audit logs and role-aware UI.
+- Delivery discipline with Docker, Alembic, CI, tests, deployment docs and demo assets.
 
 ## Core Stack
 
@@ -49,10 +91,11 @@ Data-Bridge transforms raw operational files into trusted intelligence. It conne
 - Docker Compose for PostgreSQL, Redis, API, worker and frontend
 - Unified GitHub Actions CI for backend linting, migrations, tests and frontend build
 - Frontend tests with Vitest and Testing Library for UI smoke checks and RBAC permissions
+- Real screenshot set and automated demo video capture
 
 ## Current Status
 
-The repository now contains a functional MVP foundation: backend, worker, database models, frontend dashboard, documentation and CI workflows are in place. The backend test suite covers health checks, authentication, upload validation, RBAC, anomaly alerts, dataset detail endpoints, the main import flow, analytics and authenticated PDF report download.
+The repository now contains a functional portfolio MVP: backend, worker, database models, frontend dashboard, documentation, screenshots, demo video and CI workflows are in place. The backend test suite covers health checks, authentication, organizations, upload validation, RBAC, anomaly alerts, dataset detail endpoints, the main import flow, analytics and authenticated PDF report download.
 
 ## Architecture
 
@@ -190,6 +233,11 @@ Database: Neon, Supabase, Railway PostgreSQL or Render PostgreSQL
 Redis: Upstash, Redis Cloud or Railway Redis
 ```
 
+Repository deployment helpers:
+
+- Backend Render blueprint: `render.yaml`
+- Frontend Vercel config: `frontend/vercel.json`
+
 Production rules:
 
 - `APP_ENV=production`
@@ -230,9 +278,10 @@ alembic upgrade head
 
 ## Roadmap
 
-- Expand backend and frontend test coverage.
-- Prepare Render, Railway or Fly.io deployment manifests.
-- Add portfolio screenshots and a short demo video.
+- Publish backend and frontend to public cloud URLs.
+- Connect a managed PostgreSQL database and run production migrations.
+- Configure managed Redis or document eager Celery mode for the public demo.
+- Add the final public demo link to this README.
 
 ## License
 
